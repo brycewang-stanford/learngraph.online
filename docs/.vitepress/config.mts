@@ -49,7 +49,13 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['meta', { name: 'keywords', content: 'LangGraph,LangChain,AI,Agent,Multi-Agent,Python,教程,实战' }],
-    ['meta', { name: 'author', content: 'Bryce Wang' }]
+    ['meta', { name: 'author', content: 'Bryce Wang' }],
+    // Google Analytics
+    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-W0FG0ENWH4' }],
+    ['script', {}, `window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W0FG0ENWH4');`]
   ],
   
   themeConfig: {
