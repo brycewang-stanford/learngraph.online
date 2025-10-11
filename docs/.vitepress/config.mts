@@ -43,6 +43,7 @@ export default defineConfig({
   title: 'LangGraph Lightning',
   description: '基于 LangChain Academy 的深度解读与工程实战指南',
   lang: 'zh-CN',
+  base: '/langgraph-lightning/',
   
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
