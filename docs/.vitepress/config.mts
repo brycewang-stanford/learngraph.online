@@ -139,6 +139,5 @@ export default defineConfig({
   },
   
   // 设置文档根目录为项目根目录，这样可以直接访问 module-x 目录
-  srcDir: '..',
-  outDir: './docs/.vitepress/dist'
+  srcDir: '..'
 })
