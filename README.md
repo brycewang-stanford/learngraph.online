@@ -1,43 +1,10 @@
-# LangGraph Lightning ⚡
+# LangGraph 详解与光速上手
 
 > 基于 LangChain Academy 官方课程的深度解读与工程实战指南
 
 ![LangGraph Version](https://img.shields.io/badge/LangGraph-Latest-green)
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
-
-## 📖 项目简介
-
-**LangGraph Lightning** 是一本深度解读 [LangChain Academy](https://academy.langchain.com/courses/intro-to-langgraph) 官方课程的中文实战指南。本书不仅对原课程内容进行详细注解，更重要的是大幅扩展了代码示例，增加了丰富的工程实战案例，旨在帮助 AI-Native 开发者快速掌握 LangGraph 和 Multi-Agent 系统开发。
-
-### 🎯 核心目标
-
-1. **术语通俗化**：对所有 Python 和 LangGraph 术语进行深入浅出的解读
-2. **代码实战化**：在原课程基础上大规模扩展演示代码和工程案例
-3. **门槛最小化**：让零基础的 AI-Native 用户也能快速上手
-4. **场景落地化**：展示如何将 Multi-Agent 系统应用到实际业务中
-5. **流程重塑化**：探索生成式 AI 如何重塑传统业务流程
-
-## 🌟 项目特色
-
-### 相比原课程的增强
-
-| 特性 | 原课程 | LangGraph Lightning |
-|------|--------|---------------------|
-| **语言** | 英文 | 中文详细解读 |
-| **术语解释** | 基础 | 深入通俗化讲解 |
-| **代码示例** | 演示级 | 生产级 + 工程实战 |
-| **难度曲线** | 中等 | 零基础友好 |
-| **实战案例** | 少量 | 大量业务场景 |
-| **AI 辅助** | 基础 | 深度整合 AI 开发工作流 |
-
-### 适合人群
-
-- ✅ **AI-Native 开发者**：想要快速掌握 LangGraph 的新手
-- ✅ **Python 初学者**：需要详细 Python 知识点讲解
-- ✅ **业务开发者**：希望将 AI 应用到实际业务场景
-- ✅ **架构师**：探索 Multi-Agent 系统架构设计
-- ✅ **产品经理**：了解 AI Agent 的能力边界和应用场景
 
 ## 📚 课程结构
 
@@ -81,6 +48,41 @@ langgraph-lightning/
 ├── module-5/        # 第 5 章：高级主题（规划中）
 └── module-6/        # 第 6 章：生产部署（规划中）
 ```
+
+
+## 📖 项目简介
+
+**LangGraph Lightning** 是一本深度解读 [LangChain Academy](https://academy.langchain.com/courses/intro-to-langgraph) 官方课程的中文实战指南。本书不仅对原课程内容进行详细注解，更重要的是大幅扩展了代码示例，增加了丰富的工程实战案例，旨在帮助 AI-Native 开发者快速掌握 LangGraph 和 Multi-Agent 系统开发。
+
+### 🎯 核心目标
+
+1. **术语通俗化**：对所有 Python 和 LangGraph 术语进行深入浅出的解读
+2. **代码实战化**：在原课程基础上大规模扩展演示代码和工程案例
+3. **门槛最小化**：让零基础的 AI-Native 用户也能快速上手
+4. **场景落地化**：展示如何将 Multi-Agent 系统应用到实际业务中
+5. **流程重塑化**：探索生成式 AI 如何重塑传统业务流程
+
+## 🌟 项目特色
+
+### 相比原课程的增强
+
+| 特性 | 原课程 | LangGraph Lightning |
+|------|--------|---------------------|
+| **语言** | 英文 | 中文详细解读 |
+| **术语解释** | 基础 | 深入通俗化讲解 |
+| **代码示例** | 演示级 | 生产级 + 工程实战 |
+| **难度曲线** | 中等 | 零基础友好 |
+| **实战案例** | 少量 | 大量业务场景 |
+| **AI 辅助** | 基础 | 深度整合 AI 开发工作流 |
+
+### 适合人群
+
+- ✅ **AI-Native 开发者**：想要快速掌握 LangGraph 的新手
+- ✅ **Python 初学者**：需要详细 Python 知识点讲解
+- ✅ **业务开发者**：希望将 AI 应用到实际业务场景
+- ✅ **架构师**：探索 Multi-Agent 系统架构设计
+- ✅ **产品经理**：了解 AI Agent 的能力边界和应用场景
+
 
 ## 🎓 学习路径
 
