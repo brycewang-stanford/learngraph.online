@@ -74,7 +74,8 @@ export default defineConfig({
           { text: '第 4 章 - 高级模式', link: '/module-4/4.1-parallelization-详细解读' }
         ]
       },
-      { text: 'GitHub', link: 'https://github.com/brycewang-stanford/langgraph-lightning' }
+      { text: 'GitHub', link: 'https://github.com/brycewang-stanford/langgraph-lightning' },
+      { text: '📊 数据统计', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' }
     ],
     
     sidebar: getModuleSidebar(),
