@@ -75,7 +75,7 @@ export default defineConfig({
         ]
       },
       { text: 'GitHub', link: 'https://github.com/brycewang-stanford/langgraph-lightning' },
-      { text: '📊 数据统计', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' }
+      { text: '📈 GA 数据统计', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' }
     ],
     
     sidebar: getModuleSidebar(),
