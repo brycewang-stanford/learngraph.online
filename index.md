@@ -17,24 +17,15 @@ hero:
       link: https://github.com/brycewang-stanford/langgraph-lightning
 
 features:
-  - icon: 📝
-    title: 术语通俗化
-    details: 对所有 Python 和 LangGraph 术语进行深入浅出的解读，让零基础的 AI-Native 用户也能快速上手
-  - icon: 💻
-    title: 代码实战化
-    details: 在原课程基础上大规模扩展演示代码和工程案例，从演示级升级到生产级实现
   - icon: 🎯
-    title: 场景落地化
-    details: 展示如何将 Multi-Agent 系统应用到实际业务中，包含大量真实业务场景案例
+    title: 零门槛上手
+    details: 术语通俗易懂老少皆宜地用大白话解读，每个概念配有清晰定义、原理分析、代码示例、常见陷阱和最佳实践，零基础的用户也能快速上手，把握整体架构与核心概念
+  - icon: 💻
+    title: 生产级实战
+    details: 大规模扩展演示代码和工程案例，从演示级升级到生产级实现，展示 Multi-Agent 系统在真实业务场景的落地应用，值得读者深入借鉴和反复模仿
   - icon: 🚀
-    title: 门槛最小化
-    details: 每个概念都配有清晰的定义、原理分析、代码示例、常见陷阱和最佳实践
-  - icon: 🤖
-    title: AI-Native 开发
-    details: 展示如何利用 AI 加速开发，包括 AI 辅助编码、调试、学习和代码重构
-  - icon: 🔄
-    title: 持续更新
-    details: 基于 LangChain Academy 官方课程，持续跟进最新内容和技术趋势
+    title: 持续演进，每季度迭代新版本
+    details: 利用 AI 加速开发（AI 辅助编码、调试、学习和代码重构），基于 LangChain Academy 官方课程持续跟进最新技术趋势
 ---
 
 ## 📚 课程结构
