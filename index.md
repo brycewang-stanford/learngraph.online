@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: "LangGraph Lightning"
-  text: "⚡ 快速掌握 LangGraph"
-  tagline: 基于 LangChain Academy 的深度解读与工程实战指南
+  text: "光速上手快 LangGraph，搭建你的专业 Agent 工作流"
+  tagline: 基于 LangChain Academy 官方系列课程的深度解读与大幅拓展
   image:
     src: /logo.svg
     alt: LangGraph Lightning
