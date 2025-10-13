@@ -5,7 +5,34 @@
       <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
     </linearGradient>
   </defs>
-  <circle cx="50" cy="50" r="45" fill="url(#grad)"/>
-  <path d="M 30 40 L 50 60 L 70 40" stroke="white" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 40 55 L 50 45 L 60 55" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 机器人头部 -->
+  <rect x="25" y="30" width="50" height="45" rx="8" fill="url(#grad)"/>
+
+  <!-- 天线 -->
+  <line x1="50" y1="20" x2="50" y2="30" stroke="url(#grad)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="50" cy="17" r="4" fill="url(#grad)"/>
+
+  <!-- 眼睛 -->
+  <circle cx="38" cy="45" r="5" fill="white"/>
+  <circle cx="62" cy="45" r="5" fill="white"/>
+
+  <!-- 眼睛内的点 -->
+  <circle cx="38" cy="45" r="2.5" fill="#3b82f6"/>
+  <circle cx="62" cy="45" r="2.5" fill="#3b82f6"/>
+
+  <!-- 嘴巴/显示屏 -->
+  <rect x="35" y="58" width="30" height="10" rx="2" fill="white" opacity="0.9"/>
+  <line x1="40" y1="60" x2="40" y2="66" stroke="#3b82f6" stroke-width="1.5"/>
+  <line x1="45" y1="60" x2="45" y2="66" stroke="#3b82f6" stroke-width="1.5"/>
+  <line x1="50" y1="60" x2="50" y2="66" stroke="#3b82f6" stroke-width="1.5"/>
+  <line x1="55" y1="60" x2="55" y2="66" stroke="#3b82f6" stroke-width="1.5"/>
+  <line x1="60" y1="60" x2="60" y2="66" stroke="#3b82f6" stroke-width="1.5"/>
+
+  <!-- 身体 -->
+  <rect x="32" y="75" width="36" height="18" rx="4" fill="url(#grad)" opacity="0.8"/>
+
+  <!-- 手臂连接点 -->
+  <circle cx="30" cy="80" r="3" fill="white"/>
+  <circle cx="70" cy="80" r="3" fill="white"/>
 </svg>

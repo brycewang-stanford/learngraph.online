@@ -2,41 +2,46 @@
 layout: home
 
 hero:
-  name: "LangGraph Lightning"
-  text: "光速上手快 LangGraph，搭建你的专业 Agent 工作流"
-  tagline: 基于 LangChain Academy 官方系列课程的深度解读与大幅拓展
+  name: "LangGraph 光速上手"
+
+  text: "案例先行，通俗解释，专业级搭建"
+  tagline: 基于官方系列课程的深度解读与大幅拓展
   image:
     src: /logo.svg
     alt: LangGraph Lightning
   actions:
     - theme: brand
       text: 开始学习
-      link: /module-0/0.2-LangGraph Basics-详细解读
+      link: /module-0/0.0-LangGraph-快速案例
     - theme: alt
       text: GitHub 仓库
       link: https://github.com/brycewang-stanford/langgraph-lightning
+    - theme: brand
+      text: 本书更新-Roadmap
+      link: /本书更新-Roadmap
 
 features:
   - icon: 🎯
     title: 零门槛上手
     details: 术语通俗易懂老少皆宜地用大白话解读，每个概念配有清晰定义、原理分析、代码示例、常见陷阱和最佳实践，零基础的用户也能快速上手，把握整体架构与核心概念
   - icon: 💻
-    title: 生产级实战
-    details: 大规模扩展演示代码和工程案例，从演示级升级到生产级实现，展示 Multi-Agent 系统在真实业务场景的落地应用，值得读者深入借鉴和反复模仿
-  - icon: 🚀
-    title: 持续演进，每季度迭代新版本
-    details: 利用 AI 加速开发（AI 辅助编码、调试、学习和代码重构），基于 LangChain Academy 官方课程持续跟进最新技术趋势
----
+    title: LangGraph 的设计哲学
+    details: 以图为核心，用可视化与函数式结构让多智能体系统的推理过程清晰、可控、可扩展
+  - icon: 🤖
+    title: LangGraph：拒绝"拖拽式幻觉"，回归智能体本质
+    details: LangChain 创始人 Harrison Chase 指出，拖拽式工作流工具追求的是可预测性，却无法真正构建具备自主决策的智能体。LangChain 选择不做"另一个工作流构建器"，而是聚焦如何用代码与智能体结合，让 AI 从拼装工具走向真正的智能创造
+
+--- 
 
 ## 📚 课程结构
 
 本书包含 6 个主要模块，从基础到高级，循序渐进：
 
 ### 第 0 章：基础入门
-- Python 核心概念
-- LangChain 和 LangGraph 生态
-- Chat Models 使用
-- 工具集成
+- **0.0 LangGraph 快速案例**：5 个从简单到复杂的实战案例，光速上手
+- **0.1 Python 基础入门**：Python 核心概念和 AI/ML 库入门
+- **0.2 LangGraph 基础入门**：LangChain 生态、Chat Models、工具集成
+- **0.3 LangChain 介绍**：从 LangGraph 角度系统学习 LangChain 7 大核心组件
 
 ### 第 1 章：LangGraph 核心
 - 构建第一个 LangGraph
@@ -118,7 +123,7 @@ response = app.invoke({"messages": [("user", "Hello!")]})
 
 - 📝 [提交 Issue](https://github.com/brycewang-stanford/langgraph-lightning/issues) - 报告错误或提出建议
 - 💡 [Pull Request](https://github.com/brycewang-stanford/langgraph-lightning/pulls) - 贡献代码或文档
-- 📧 [联系作者](mailto:brycewang2018@gmail.com) - 直接反馈
+- 📧 [Email 联系作者](mailto:brycew6m@gmail.com) - 直接反馈
 
 ---
 

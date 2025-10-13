@@ -1,0 +1,87 @@
+/**
+ * 自定义样式：优化目录显示
+ * 让长标题完整显示，不截断
+ */
+
+/* === 核心修复：让目录标题完整显示 === */
+
+/* 1. 目录容器：移除宽度限制和溢出隐藏 */
+.VPDocAside.has-aside {
+  width: 280px !important;
+  padding-left: 16px !important;
+}
+
+.VPDocAsideOutline {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* 2. 目录链接：允许换行和完整显示 */
+.VPDocAsideOutline .outline-link {
+  display: block !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: 1.5 !important;
+  padding: 4px 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* 3. 目录标题文本：确保完整显示 */
+.VPDocAsideOutline .outline-link .outline-title {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  display: block !important;
+  max-width: none !important;
+  width: 100% !important;
+}
+
+/* 4. 目录项容器：移除限制 */
+.VPDocAsideOutline .outline-item {
+  margin: 2px 0 !important;
+  max-width: none !important;
+}
+
+/* 5. 嵌套目录项：保持对齐但允许换行 */
+.VPDocAsideOutline .root .outline-item {
+  padding-left: 0 !important;
+}
+
+.VPDocAsideOutline .nested .outline-item {
+  padding-left: 16px !important;
+}
+
+/* === 响应式：大屏幕增加宽度 === */
+
+/* 大屏幕 (1440px+) */
+@media (min-width: 1440px) {
+  .VPDocAside.has-aside {
+    width: 320px !important;
+  }
+}
+
+/* 超大屏幕 (1920px+) */
+@media (min-width: 1920px) {
+  .VPDocAside.has-aside {
+    width: 360px !important;
+  }
+}
+
+/* === 额外优化：提升可读性 === */
+
+/* 悬停效果保持 */
+.VPDocAsideOutline .outline-link:hover {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* 活动状态保持 */
+.VPDocAsideOutline .outline-link.active {
+  color: var(--vp-c-brand-1) !important;
+  font-weight: 600 !important;
+}

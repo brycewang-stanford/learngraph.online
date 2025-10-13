@@ -40,7 +40,7 @@ function getModuleSidebar() {
 }
 
 export default defineConfig({
-  title: 'LangGraph Lightning',
+  title: 'LangGraph 光速上手 (v0.1)',
   description: '基于 LangChain Academy 的深度解读与工程实战指南',
   lang: 'zh-CN',
   base: '/langgraph-lightning/',
@@ -62,12 +62,16 @@ export default defineConfig({
     logo: '/logo.svg',
     
     nav: [
+      { text: '本书作者：王几行XING', link: 'https://www.zhihu.com/people/brycewang1898' },
       { text: '首页', link: '/' },
-      { text: '开始学习', link: '/module-0/0.1-Python Basics' },
-      { 
+      { text: '开始学习', link: '/module-0/0.0-LangGraph-快速案例' },
+      {
         text: '课程章节',
         items: [
-          { text: '第 0 章 - 基础入门', link: '/module-0/0.2-LangGraph Basics-详细解读' },
+          { text: '第 0 章 - 光速上手', link: '/module-0/0.0-LangGraph-快速案例' },
+          { text: '第 0 章 - Python 基础', link: '/module-0/0.1-Python-基础入门' },
+          { text: '第 0 章 - LangGraph 入门', link: '/module-0/0.2-LangGraph-基础入门' },
+          { text: '第 0 章 - LangChain 介绍', link: '/module-0/0.3-补充-LangChain-快速介绍' },
           { text: '第 1 章 - 核心概念', link: '/module-1/1.1-simple-graph-详细解读' },
           { text: '第 2 章 - 状态管理', link: '/module-2/2.1-state-schema-详细解读' },
           { text: '第 3 章 - 人机协作', link: '/module-3/breakpoints-详细解读' },
@@ -81,8 +85,8 @@ export default defineConfig({
     sidebar: getModuleSidebar(),
     
     outline: {
-      level: [2, 3],
-      label: '目录'
+      level: 'deep',
+      label: '本页目录'
     },
     
     socialLinks: [
@@ -90,8 +94,8 @@ export default defineConfig({
     ],
     
     footer: {
-      message: '基于 MIT 许可证发布',
-      copyright: 'Copyright © 2025-present Bryce Wang'
+      message: '基于 MIT 许可证发布。内容版权归作者所有。',
+      copyright: 'Copyright © 2025-present 王几行XING（Bryce Wang）'
     },
     
     search: {
