@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "LangGraph 光速上手"
+  name: "LangGraph 飞速上手"
 
   text: "案例先行，通俗解释，专业级搭建"
   tagline: 基于官方系列课程的深度解读与大幅拓展

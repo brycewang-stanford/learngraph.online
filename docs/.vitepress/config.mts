@@ -40,7 +40,7 @@ function getModuleSidebar() {
 }
 
 export default defineConfig({
-  title: '《LangGraph 光速上手 (v0.1)》',
+  title: '《LangGraph 飞速上手 (v0.1)》',
   description: '基于 LangChain Academy 的深度解读与工程实战指南',
   lang: 'zh-CN',
   base: '/langgraph-lightning/',
@@ -68,7 +68,7 @@ export default defineConfig({
       {
         text: '课程章节',
         items: [
-          { text: '第 0 章 - 光速上手', link: '/module-0/0.0-LangGraph-快速案例' },
+          { text: '第 0 章 - 飞速上手', link: '/module-0/0.0-LangGraph-快速案例' },
           { text: '第 0 章 - Python 基础', link: '/module-0/0.1-Python-基础入门' },
           { text: '第 0 章 - LangGraph 入门', link: '/module-0/0.2-LangGraph-基础入门' },
           { text: '第 0 章 - LangChain 介绍', link: '/module-0/0.3-补充-LangChain-快速介绍' },
