@@ -1,0 +1,28 @@
+# Python 虚拟环境
+.venv/
+venv/
+env/
+
+# Node modules (虽然 Vercel 默认会忽略，但显式声明更清晰)
+node_modules/
+
+# IDE 配置
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# Jupyter notebooks
+*.ipynb_checkpoints/
+
+# 临时文件
+*.log
+*.tmp
