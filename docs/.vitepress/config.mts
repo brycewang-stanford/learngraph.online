@@ -64,18 +64,20 @@ export default defineConfig({
     nav: [
       { text: '本书作者：王几行XING', link: 'https://www.zhihu.com/people/brycewang1898' },
       { text: '首页', link: '/' },
-      { text: '开始学习', link: '/module-0/0.0-LangGraph-快速案例' },
+      { text: '开始学习', link: '/module-0/0.0-LangGraph-上手案例' },
       {
         text: '课程章节',
         items: [
-          { text: '第 0 章 - 飞速上手', link: '/module-0/0.0-LangGraph-快速案例' },
+          { text: '第 0 章 - 飞速上手', link: '/module-0/0.0-LangGraph-上手案例' },
           { text: '第 0 章 - Python 基础', link: '/module-0/0.1-Python-基础入门' },
           { text: '第 0 章 - LangGraph 入门', link: '/module-0/0.2-LangGraph-基础入门' },
           { text: '第 0 章 - LangChain 介绍', link: '/module-0/0.3-补充-LangChain-快速介绍' },
-          { text: '第 1 章 - 核心概念', link: '/module-1/1.1-simple-graph-详细解读' },
+          { text: '第 1 章 - 核心概念', link: '/module-1/1.1-simple-graph-最简图' },
           { text: '第 2 章 - 状态管理', link: '/module-2/2.1-state-schema-详细解读' },
           { text: '第 3 章 - 人机协作', link: '/module-3/breakpoints-详细解读' },
-          { text: '第 4 章 - 高级模式', link: '/module-4/4.1-parallelization-详细解读' }
+          { text: '第 4 章 - 高级模式', link: '/module-4/4.1-parallelization-详细解读' },
+          { text: '第 5 章 - 记忆系统', link: '/module-5/5.1-memory_agent-详细解读' },
+          { text: '第 6 章 - 生产部署', link: '/module-6/6.1-creating-详细解读' }
         ]
       },
       { text: 'GitHub', link: 'https://github.com/brycewang-stanford/langgraph-lightning' },

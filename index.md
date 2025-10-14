@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "LangGraph 飞速上手"
 
-  text: "案例先行，通俗解释，专业级搭建"
+  text: "案例先行，面向 Agent 小白，工业级搭建"
   tagline: 基于官方系列课程的深度解读与大幅拓展
   image:
     src: /logo.svg
@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: 开始学习
-      link: /module-0/0.0-LangGraph-快速案例
+      link: /module-0/0.0-LangGraph-上手案例
     - theme: alt
       text: GitHub 仓库
       link: https://github.com/brycewang-stanford/langgraph-lightning
@@ -31,14 +31,18 @@ features:
     title: LangGraph：拒绝"拖拽式"工具带来的幻觉，回归智能体本质
     details: LangChain 创始人 Harrison Chase 指出，拖拽式工作流工具追求的是可预测性，却无法真正构建具备自主决策的智能体。在他看来，OpenAI 的 AgentKit 以及市面上的Coze、LangFlow 和 Flowise 等，本质上都是可视化工作流构建器，而非真正的"智能体构建器"
 
---- 
+---
+
+<p align="center">
+  <img src="/langgraph.png" alt="LangGraph Logo" width="500" />
+</p>
 
 ## 📚 课程结构
 
 本书包含 6 个主要模块，从基础到高级，循序渐进：
 
 ### 第 0 章：基础入门
-- **0.0 LangGraph 快速案例**：5 个从简单到复杂的实战案例，光速上手
+- **0.0 LangGraph 快速案例**：5 个从简单到复杂的实战案例，飞速上手
 - **0.1 Python 基础入门**：Python 核心概念和 AI/ML 库入门
 - **0.2 LangGraph 基础入门**：LangChain 生态、Chat Models、工具集成
 - **0.3 LangChain 介绍**：从 LangGraph 角度系统学习 LangChain 7 大核心组件

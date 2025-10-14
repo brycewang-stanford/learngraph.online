@@ -50,7 +50,7 @@ langgraph-lightning/
 │   └── 0.2-LangGraph Basics-详细解读.md
 │
 ├── module-1/        # 第 1 章：LangGraph 核心概念
-│   ├── 1.1-simple-graph-详细解读.md
+│   ├── 1.1-simple-graph-最简图.md
 │   ├── 1.2-chain-详细解读.md
 │   ├── 1.3-router-详细解读.md
 │   ├── 1.4-agent-详细解读.md
@@ -218,7 +218,7 @@ app = graph.compile()
 response = app.invoke({"messages": [("user", "Hello!")]})
 ```
 
-详细教程请参考 `module-1/1.1-simple-graph-详细解读.md`
+详细教程请参考 `module-1/1.1-simple-graph-最简图.md`
 
 ## 📖 与原课程的关系
 
