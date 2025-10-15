@@ -112,17 +112,11 @@ onMounted(() => {
 
 <style scoped>
 .comments-container {
-  /* 保持只影响评论容器本身 */
+  /* 保持只影响评论容器本身，宽度与文档主体一致 */
   margin-top: 1rem;
   padding: 0;
-  /* 让评论区域可在文档主体中“全宽”展示，便于查看历史评论 */
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  width: 100vw;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 100%;
 }
 
 .comments-header {
@@ -308,15 +302,5 @@ onMounted(() => {
   color: var(--vp-c-text-1);
 }
 
-/* 窄屏优化：避免造成横向滚动条 */
-@media (max-width: 960px) {
-  .comments-container {
-    left: 0;
-    right: 0;
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
-    max-width: 100%;
-  }
-}
+/* 无需额外窄屏适配：随主体容器自适应 */
 </style>
