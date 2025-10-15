@@ -49,7 +49,7 @@ const pageTitle = ref('')
 
 // 强制拉高 Cusdis iframe 高度，避免内部滚动条，尽量显示全部历史评论
 function bumpIframeHeight() {
-  const iframe = document.querySelector('#cusdis_thread iframe') as HTMLIFrameElement | null
+  const iframe = document.querySelector('#cusdis_thread iframe')
   if (!iframe) return
   // 以视窗高度为基准，给出较大的最小高度（近似 BBS 全展开效果）
   const base = Math.max(window.innerHeight * 2, 1600)
@@ -59,7 +59,7 @@ function bumpIframeHeight() {
   iframe.style.overflow = 'visible'
 }
 
-let mo: MutationObserver | null = null
+let mo = null
 
 onMounted(() => {
   // 设置页面信息
@@ -85,7 +85,7 @@ onMounted(() => {
   }
 
   // 当 Cusdis 发出高度同步消息时，再次提升高度，规避其内部可能的 max-height 限制
-  const onMsg = (e: MessageEvent) => {
+  const onMsg = (e) => {
     if (typeof e.origin === 'string' && e.origin.includes('cusdis')) {
       bumpIframeHeight()
     }
