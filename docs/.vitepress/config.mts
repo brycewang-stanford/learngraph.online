@@ -45,7 +45,7 @@ function getModuleSidebar() {
 }
 
 export default defineConfig({
-  title: '《LangGraph 飞速上手 (v0.1)》',
+  title: '《LangGraph 飞速上手 v0.1》',
   description: '基于 LangChain Academy 的深度解读与工程实战指南',
   lang: 'zh-CN',
   base: process.env.VITE_BASE_PATH || '/langgraph-lightning/',
@@ -85,7 +85,7 @@ export default defineConfig({
           { text: '第 6 章 - 生产部署', link: '/module-6/6.1-creating-详细解读' }
         ]
       },
-      { text: '📈 GA 访问数据统计', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' }
+      { text: '📈 网站访问数据', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' }
     ],
     
     sidebar: getModuleSidebar(),
