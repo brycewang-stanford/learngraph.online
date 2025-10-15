@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref } from 'vue'
 import { useRoute } from 'vitepress'
 
 const route = useRoute()
@@ -46,6 +46,20 @@ const appId = '9a1060ba-ab12-4429-a517-44a5b140e2d6'
 const pageId = ref('')
 const pageUrl = ref('')
 const pageTitle = ref('')
+
+// 强制拉高 Cusdis iframe 高度，避免内部滚动条，尽量显示全部历史评论
+function bumpIframeHeight() {
+  const iframe = document.querySelector('#cusdis_thread iframe') as HTMLIFrameElement | null
+  if (!iframe) return
+  // 以视窗高度为基准，给出较大的最小高度（近似 BBS 全展开效果）
+  const base = Math.max(window.innerHeight * 2, 1600)
+  iframe.style.minHeight = base + 'px'
+  iframe.style.height = base + 'px'
+  iframe.style.maxHeight = 'none'
+  iframe.style.overflow = 'visible'
+}
+
+let mo: MutationObserver | null = null
 
 onMounted(() => {
   // 设置页面信息
@@ -62,14 +76,53 @@ onMounted(() => {
     script.defer = true
     document.body.appendChild(script)
   }
+
+  // 监听 iframe 插入或更新，强制拉高高度
+  const host = document.getElementById('cusdis_thread')
+  if (host && typeof MutationObserver !== 'undefined') {
+    mo = new MutationObserver(() => bumpIframeHeight())
+    mo.observe(host, { childList: true, subtree: true })
+  }
+
+  // 当 Cusdis 发出高度同步消息时，再次提升高度，规避其内部可能的 max-height 限制
+  const onMsg = (e: MessageEvent) => {
+    if (typeof e.origin === 'string' && e.origin.includes('cusdis')) {
+      bumpIframeHeight()
+    }
+  }
+  window.addEventListener('message', onMsg)
+
+  // 视窗改变时也拉高（移动端横竖屏切换等）
+  const onResize = () => bumpIframeHeight()
+  window.addEventListener('resize', onResize)
+
+  // 初始尝试多次，确保脚本加载完成后生效
+  setTimeout(bumpIframeHeight, 500)
+  setTimeout(bumpIframeHeight, 1200)
+  setTimeout(bumpIframeHeight, 2500)
+
+  // 清理
+  onBeforeUnmount(() => {
+    if (mo) mo.disconnect()
+    window.removeEventListener('message', onMsg)
+    window.removeEventListener('resize', onResize)
+  })
 })
 </script>
 
 <style scoped>
 .comments-container {
+  /* 保持只影响评论容器本身 */
   margin-top: 1rem;
   padding: 0;
-  max-width: 100%;
+  /* 让评论区域可在文档主体中“全宽”展示，便于查看历史评论 */
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+  max-width: 100vw;
 }
 
 .comments-header {
@@ -92,12 +145,14 @@ onMounted(() => {
 
 /* Cusdis 容器 - 减少间距 */
 .cusdis-wrapper {
-  margin: 1rem 0;
-  padding: 1rem;
+  margin: 1rem auto;
+  padding: 1rem 1.25rem;
   background: var(--vp-c-bg-soft);
   border-radius: 8px;
   border: 2px solid var(--vp-c-brand-lighter);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  /* 避免内容被裁剪，确保历史评论可见 */
+  overflow: visible;
 }
 
 /* Cusdis 样式美化 - 强制显示所有内容 */
@@ -106,6 +161,17 @@ onMounted(() => {
   height: auto !important;
   max-height: none !important;
   overflow: visible !important;
+}
+
+/* 适配 Cusdis iframe 尺寸，确保可完全展开显示 */
+:deep(#cusdis_thread iframe) {
+  width: 100% !important;
+  /* 直接给出较大的最小高度与显式高度，避免出现内部滚动条 */
+  min-height: 1600px !important;
+  height: 1600px !important;
+  max-height: none !important;
+  display: block;
+  border: 0;
 }
 
 
@@ -240,5 +306,17 @@ onMounted(() => {
 .dark :deep(.cusdis-comment-box input) {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
+}
+
+/* 窄屏优化：避免造成横向滚动条 */
+@media (max-width: 960px) {
+  .comments-container {
+    left: 0;
+    right: 0;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 </style>
