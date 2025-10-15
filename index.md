@@ -37,7 +37,7 @@ features:
   <img src="/langgraph.png" alt="LangGraph Logo" width="500" />
 </p>
 
-## 📚 课程结构
+## 课程结构
 
 本书包含 6 个主要模块，从基础到高级，循序渐进：
 
@@ -48,42 +48,42 @@ features:
 - **0.3 LangChain 介绍**：从 LangGraph 角度系统学习 LangChain 7 大核心组件
 
 ### 第 1 章：LangGraph 核心
-- 构建第一个 LangGraph
-- Chain、Router 和 Agent
-- 状态管理机制
-- Agent 记忆系统
+- **1.1 构建第一个 LangGraph**：一个最简单的图
+- **1.2 Chain、Router 和 Agent**：核心概念
+- **1.3 状态管理机制**：核心机制
+- **1.4 Agent 记忆系统**：多轮对话与持久化
 
 ### 第 2 章：状态管理
-- State Schema 设计
-- Reducers 的作用
-- 多模式状态管理
-- 消息过滤和裁剪
+- **2.1 State Schema 设计**
+- **2.2 Reducers 的作用**
+- **2.3 多模式状态管理**
+- **2.4 消息过滤和裁剪**
 
 ### 第 3 章：人机协作
-- 断点调试
-- 状态编辑
-- 流式中断
-- 时间旅行调试
+- **3.1 断点调试**
+- **3.2 状态编辑**
+- **3.3 流式中断**
+- **3.4 时间旅行调试**
 
 ### 第 4 章：高级模式
-- 并行执行优化
-- 子图模块化设计
-- Map-Reduce 模式
-- 构建研究助手
+- **4.1 并行执行优化**
+- **4.2 子图模块化设计**
+- **4.3 Map-Reduce 模式**
+- **4.4 构建研究助手**
 
 ### 第 5-6 章：生产实战
-- 性能优化
-- 监控和日志
-- 安全性和权限
-- 大规模部署
+- **性能优化**
+- **监控和日志**
+- **安全性和权限**
+- **大规模部署**
 
-## 🎯 适合人群
+## 适合人群
 
-- ✅ **AI-Native 开发者**：想要快速掌握 LangGraph 的新手
-- ✅ **Python 初学者**：需要详细 Python 知识点讲解
-- ✅ **业务开发者**：希望将 AI 应用到实际业务场景
-- ✅ **架构师**：探索 Multi-Agent 系统架构设计
-- ✅ **产品经理**：了解 AI Agent 的能力边界和应用场景
+- **AI-Native 开发者**：想要快速掌握 LangGraph 的新手
+- **Python 初学者**：需要详细 Python 知识点讲解
+- **业务开发者**：希望将 AI 应用到实际业务场景
+- **架构师**：探索 Multi-Agent 系统架构设计
+- **产品经理**：了解 AI Agent 的能力边界和应用场景
 
 ## 🚀 快速开始
 
@@ -116,19 +116,19 @@ response = app.invoke({"messages": [("user", "Hello!")]})
 
 本书是对 [LangChain Academy](https://academy.langchain.com/courses/intro-to-langgraph) 官方课程的深度解读和扩展：
 
-- ✅ **深度解读**：不是简单翻译，而是深入分析每个概念
-- ✅ **内容扩展**：原课程基础上增加 3-5 倍的内容量
-- ✅ **实战强化**：将演示级代码升级为生产级实现
-- ✅ **本地化适配**：针对中文开发者的学习习惯和痛点
+- **深度解读**：不是简单翻译，而是深入分析每个概念
+- **内容扩展**：原课程基础上增加 3-5 倍的内容量
+- **实战强化**：将演示级代码升级为生产级实现
+- **本地化适配**：针对中文开发者的学习习惯和痛点
 
 ## 🤝 贡献与反馈
 
 欢迎通过以下方式参与：
 
-- 📝 [提交 Issue](https://github.com/brycewang-stanford/langgraph-lightning/issues) - 报告错误或提出建议
-- 💡 [Pull Request](https://github.com/brycewang-stanford/langgraph-lightning/pulls) - 贡献代码或文档
-- 📧 [Email 联系作者](mailto:brycew6m@gmail.com) - 直接反馈
+- [提交 Issue](https://github.com/brycewang-stanford/langgraph-lightning/issues) - 报告错误或提出建议
+- [Pull Request](https://github.com/brycewang-stanford/langgraph-lightning/pulls) - 贡献代码或文档
+- [Email 联系作者](mailto:brycew6m@gmail.com) - 直接反馈
 
 ---
 
-**让我们一起，在生成式 AI 的助力下，重塑这个世界的业务流程！** 🚀
+**让我们一起，在生成式 AI 的助力下，快速掌握 Agentic AI，重塑这个世界的业务流程！** 
