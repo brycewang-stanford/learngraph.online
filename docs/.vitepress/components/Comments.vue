@@ -53,129 +53,13 @@ onMounted(() => {
   pageUrl.value = typeof window !== 'undefined' ? window.location.href : ''
   pageTitle.value = document.title || 'LangGraph Lightning - 问题反馈'
 
-  // 加载 Cusdis 脚本
+  // 简单加载 Cusdis 脚本，不做任何额外处理
   if (!document.querySelector('#cusdis-script')) {
     const script = document.createElement('script')
     script.id = 'cusdis-script'
     script.src = 'https://cusdis.com/js/cusdis.es.js'
     script.async = true
     script.defer = true
-
-    // 脚本加载完成后，强制展开所有内容
-    script.onload = () => {
-      // 超级强力的展开函数
-      const superForceExpand = () => {
-        // 1. 处理所有可能的容器
-        const allElements = document.querySelectorAll('*')
-        allElements.forEach(el => {
-          const computedStyle = window.getComputedStyle(el)
-
-          // 检查是否有滚动或高度限制
-          if (computedStyle.overflow === 'auto' ||
-              computedStyle.overflow === 'scroll' ||
-              computedStyle.overflowY === 'auto' ||
-              computedStyle.overflowY === 'scroll' ||
-              computedStyle.maxHeight !== 'none') {
-
-            // 如果元素包含评论相关内容，强制展开
-            if (el.id?.includes('cusdis') ||
-                el.className?.includes('comment') ||
-                el.className?.includes('cusdis')) {
-              el.style.cssText += `
-                height: auto !important;
-                max-height: none !important;
-                overflow: visible !important;
-                overflow-y: visible !important;
-                min-height: auto !important;
-              `
-            }
-          }
-        })
-
-        // 2. 特殊处理 iframe
-        const iframes = document.querySelectorAll('iframe')
-        iframes.forEach(iframe => {
-          iframe.style.cssText = `
-            width: 100% !important;
-            height: 2000px !important;
-            min-height: 2000px !important;
-            border: none !important;
-            overflow: visible !important;
-          `
-
-          // 尝试访问 iframe 内容（如果同源）
-          try {
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
-            if (iframeDoc) {
-              const iframeElements = iframeDoc.querySelectorAll('*')
-              iframeElements.forEach(el => {
-                if (el.style) {
-                  el.style.maxHeight = 'none'
-                  el.style.overflow = 'visible'
-                }
-              })
-            }
-          } catch (e) {
-            console.log('Cannot access iframe content (cross-origin)')
-          }
-        })
-
-        // 3. 注入全局样式
-        if (!document.querySelector('#force-expand-style')) {
-          const style = document.createElement('style')
-          style.id = 'force-expand-style'
-          style.innerHTML = `
-            #cusdis_thread,
-            #cusdis_thread *,
-            .cusdis-comment-list,
-            [class*="comment-list"],
-            [id*="comment-list"] {
-              height: auto !important;
-              max-height: none !important;
-              overflow: visible !important;
-              overflow-y: visible !important;
-            }
-
-            /* 隐藏所有滚动条 */
-            #cusdis_thread::-webkit-scrollbar,
-            #cusdis_thread *::-webkit-scrollbar {
-              display: none !important;
-            }
-
-            /* 确保 iframe 足够高 */
-            iframe {
-              min-height: 2000px !important;
-            }
-          `
-          document.head.appendChild(style)
-        }
-      }
-
-      // 多次执行，确保生效
-      setTimeout(superForceExpand, 100)
-      setTimeout(superForceExpand, 500)
-      setTimeout(superForceExpand, 1000)
-      setTimeout(superForceExpand, 2000)
-      setTimeout(superForceExpand, 3000)
-
-      // 监听 DOM 变化，持续强制展开
-      const observer = new MutationObserver(() => {
-        superForceExpand()
-      })
-
-      setTimeout(() => {
-        const target = document.querySelector('#cusdis_thread')
-        if (target) {
-          observer.observe(target, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class']
-          })
-        }
-      }, 1000)
-    }
-
     document.body.appendChild(script)
   }
 })
@@ -224,19 +108,6 @@ onMounted(() => {
   overflow: visible !important;
 }
 
-/* 强制 Cusdis 所有内部容器展开 - 更全面的选择器 */
-:deep(#cusdis_thread *) {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-/* 专门针对可能的评论容器 */
-:deep(#cusdis_thread > div),
-:deep(#cusdis_thread > div > div) {
-  height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
 
 /* 评论输入框区域 - 更紧凑的布局 */
 :deep(.cusdis-comment-box) {
@@ -323,24 +194,6 @@ onMounted(() => {
   overflow: visible !important;
 }
 
-/* 如果有滚动容器，强制它展开 - 更强力的规则 */
-:deep([style*="overflow"]),
-:deep([style*="height"]),
-:deep([style*="max-height"]) {
-  overflow: visible !important;
-  max-height: none !important;
-  height: auto !important;
-}
-
-/* 完全重置任何滚动样式 */
-:deep(*) {
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
-
-:deep(*::-webkit-scrollbar) {
-  display: none !important;
-}
 
 :deep(.cusdis-comment-item) {
   background: var(--vp-c-bg);
@@ -387,51 +240,5 @@ onMounted(() => {
 .dark :deep(.cusdis-comment-box input) {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
-}
-/* 终极修复 - 强制展开所有内容 */
-#cusdis_thread {
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-#cusdis_thread > * {
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-/* 针对所有可能的嵌套容器 */
-#cusdis_thread * {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-/* 针对 iframe 内容（如果 Cusdis 使用 iframe） */
-:deep(iframe) {
-  width: 100% !important;
-  height: 1000px !important;
-  min-height: 1000px !important;
-  overflow: visible !important;
-}
-
-/* 确保评论列表完全可见 */
-.cusdis-comment-list,
-#cusdis-comment-list,
-[class*="comment-list"],
-[id*="comment-list"] {
-  height: auto !important;
-  max-height: none !important;
-  overflow: visible !important;
-  display: block !important;
-}
-
-/* 确保每个评论项都可见 */
-.cusdis-comment-item,
-[class*="comment-item"] {
-  display: block !important;
-  visibility: visible !important;
 }
 </style>
