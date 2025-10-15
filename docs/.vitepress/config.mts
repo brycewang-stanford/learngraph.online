@@ -73,12 +73,12 @@ export default defineConfig({
       {
         text: '课程章节',
         items: [
-          { text: '第 0 章 - 飞速上手', link: '/module-0/0.0-LangGraph-上手案例' },
-          { text: '第 0 章 - Python 基础', link: '/module-0/0.1-Python-基础入门' },
-          { text: '第 0 章 - LangGraph 入门', link: '/module-0/0.2-LangGraph-基础入门' },
-          { text: '第 0 章 - LangChain 介绍', link: '/module-0/0.3-补充-LangChain-快速介绍' },
-          { text: '第 1 章 - 核心概念', link: '/module-1/1.1-simple-graph-最简图' },
-          { text: '第 2 章 - 状态管理', link: '/module-2/2.1-state-schema-详细解读' },
+          { text: '第 0 章 前言 - 飞速上手', link: '/module-0/0.0-LangGraph-上手案例' },
+          { text: '第 0 章 前言 - Python 基础', link: '/module-0/0.1-Python-基础入门' },
+          { text: '第 0 章 前言 - LangGraph 入门', link: '/module-0/0.2-LangGraph-基础入门' },
+          { text: '第 0 章 前言 - LangChain 介绍', link: '/module-0/0.3-补充-LangChain-快速介绍' },
+          { text: '第 1 章 - 基础概念', link: '/module-1/1.1-simple-graph-最简图' },
+          { text: '第 2 章 - 核心机制', link: '/module-2/2.1-state-schema-详细解读' },
           { text: '第 3 章 - 人机协作', link: '/module-3/breakpoints-详细解读' },
           { text: '第 4 章 - 高级模式', link: '/module-4/4.1-parallelization-详细解读' },
           { text: '第 5 章 - 记忆系统', link: '/module-5/5.1-memory_agent-详细解读' },
