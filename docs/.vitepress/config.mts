@@ -29,8 +29,13 @@ function getModuleSidebar() {
       }
     })
     
+    // 自定义部分章节的分组标题
+    let moduleText = `第 ${moduleNumber} 章`
+    if (moduleNumber === '0') moduleText = '第 0 章 前言'
+    if (moduleNumber === '1') moduleText = '第 1 章 基础概念'
+    if (moduleNumber === '2') moduleText = '第 2 章 核心机制'
     sidebar.push({
-      text: `第 ${moduleNumber} 章`,
+      text: moduleText,
       collapsed: false,
       items: items
     })
@@ -80,8 +85,6 @@ export default defineConfig({
           { text: '第 6 章 - 生产部署', link: '/module-6/6.1-creating-详细解读' }
         ]
       },
-      { text: '💬 问题反馈', link: '/feedback' },
-      { text: 'GitHub', link: 'https://github.com/brycewang-stanford/langgraph-lightning' },
       { text: '📈 GA 访问数据统计', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' }
     ],
     
