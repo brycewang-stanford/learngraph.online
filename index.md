@@ -4,8 +4,8 @@ layout: home
 hero:
   name: "LangGraph 飞速上手"
 
-  text: "案例先行，面向 Agent 小白，工业级搭建"
-  tagline: 基于官方系列课程的深度解读与大幅拓展
+  text: "案例先行，通俗易懂"
+  tagline: AI时代，理解为王：摒弃技术细节，直达 Agentic AI 思想内核
   image:
     src: /logo.svg
     alt: LangGraph Lightning

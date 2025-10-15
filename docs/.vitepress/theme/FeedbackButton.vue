@@ -1,8 +1,6 @@
 <template>
   <a
-    href="https://github.com/brycewang-stanford/langgraph-lightning/issues"
-    target="_blank"
-    rel="noopener noreferrer"
+    href="feedback.html"
     class="feedback-button"
     title="问题反馈"
   >

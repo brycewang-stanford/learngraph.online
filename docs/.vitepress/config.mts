@@ -80,6 +80,7 @@ export default defineConfig({
           { text: '第 6 章 - 生产部署', link: '/module-6/6.1-creating-详细解读' }
         ]
       },
+      { text: '💬 问题反馈', link: '/feedback' },
       { text: 'GitHub', link: 'https://github.com/brycewang-stanford/langgraph-lightning' },
       { text: '📈 GA 访问数据统计', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' }
     ],
