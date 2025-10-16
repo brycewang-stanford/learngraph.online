@@ -52,7 +52,7 @@ function bumpIframeHeight() {
   const iframe = document.querySelector('#cusdis_thread iframe')
   if (!iframe) return
   // 以视窗高度为基准，给出较大的最小高度（近似 BBS 全展开效果）
-  const base = Math.max(window.innerHeight * 2, 1600)
+  const base = Math.max(window.innerHeight * 2, 1400)
   iframe.style.minHeight = base + 'px'
   iframe.style.height = base + 'px'
   iframe.style.maxHeight = 'none'
@@ -161,8 +161,8 @@ onMounted(() => {
 :deep(#cusdis_thread iframe) {
   width: 100% !important;
   /* 直接给出较大的最小高度与显式高度，避免出现内部滚动条 */
-  min-height: 1600px !important;
-  height: 1600px !important;
+  min-height: 1400px !important;
+  height: 1400px !important;
   max-height: none !important;
   display: block;
   border: 0;
