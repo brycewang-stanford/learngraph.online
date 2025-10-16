@@ -1,6 +1,6 @@
 <template>
   <a
-    href="/langgraph-lightning/feedback"
+    href="/feedback"
     class="feedback-button"
     title="问题反馈"
   >

@@ -48,7 +48,7 @@ export default defineConfig({
   title: '《LangGraph 飞速上手 v0.1》',
   description: '基于 LangChain Academy 的深度解读与工程实战指南',
   lang: 'zh-CN',
-  base: process.env.VITE_BASE_PATH || '/langgraph-lightning/',
+  base: '/',
   ignoreDeadLinks: true,
   
   head: [
