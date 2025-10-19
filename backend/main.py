@@ -27,7 +27,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # 本地开发
+        "http://localhost:5173",  # 本地开发（dev server）
+        "http://localhost:4173",  # 本地预览（production preview）
         "https://learngraph.online",  # 生产环境
         "https://*.vercel.app",  # Vercel 预览部署
     ],
