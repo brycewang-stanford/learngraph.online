@@ -85,3 +85,32 @@
   color: var(--vp-c-brand-1) !important;
   font-weight: 600 !important;
 }
+
+/* === 将 Python 代码块工具栏移到代码块上方 === */
+/* 调整代码块容器为相对定位 */
+div.language-python {
+  position: relative !important;
+  margin-top: 40px !important; /* 为上方的工具栏留出空间 */
+}
+
+/* 将工具栏移到代码块上方 */
+div.language-python > span.lang,
+div.language-python > button,
+div.language-python > .copy {
+  position: absolute !important;
+  top: -36px !important; /* 移到代码块上方 */
+  z-index: 10 !important;
+}
+
+/* 调整各个按钮的水平位置 */
+div.language-python > span.lang {
+  left: 0 !important;
+}
+
+div.language-python > button.copy {
+  right: 100px !important; /* 复制按钮位置 */
+}
+
+div.language-python > button:not(.copy) {
+  right: 0 !important; /* 运行代码按钮在最右边 */
+}
