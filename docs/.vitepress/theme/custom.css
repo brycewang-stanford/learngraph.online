@@ -114,3 +114,9 @@ div.language-python > button.copy {
 div.language-python > button:not(.copy) {
   right: 0 !important; /* 运行代码按钮在最右边 */
 }
+
+/* === Python 代码字体颜色：绿色 === */
+/* 只修改 Python 代码块内的代码字体颜色，不影响其他语言 */
+div.language-python pre code {
+  color: #00ff00 !important;
+}
