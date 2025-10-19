@@ -85,7 +85,7 @@ export default defineConfig({
           { text: '第 6 章 - 生产部署', link: '/module-6/6.1-creating-详细解读' }
         ]
       },
-      { text: '🐍 Python 编辑器（FastAPI）', link: '/python-api-playground' },
+      { text: '⚡ Python 编辑器（极速版）', link: '/python-lite-playground' },
       { text: '📈 网站访问数据', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' },
       { text: '反馈审核', link: 'https://cusdis.com/dashboard/project/9a1060ba-ab12-4429-a517-44a5b140e2d6' }
     ],

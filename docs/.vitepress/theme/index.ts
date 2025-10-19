@@ -7,6 +7,7 @@ import FeedbackButton from './FeedbackButton.vue'
 import SidebarToggle from './SidebarToggle.vue'
 import PythonEditor from '../components/PythonEditor.vue'
 import PythonEditorAPI from '../components/PythonEditorAPI.vue'
+import PythonEditorLite from '../components/PythonEditorLite.vue'
 import { pyodideManager } from '../utils/pyodide-manager'
 
 export default {
@@ -21,6 +22,7 @@ export default {
     // 注册全局组件
     app.component('PythonEditor', PythonEditor)
     app.component('PythonEditorAPI', PythonEditorAPI)  // FastAPI 版本
+    app.component('PythonEditorLite', PythonEditorLite)  // 轻量级版本（无 Monaco）
 
     // 在浏览器环境中预加载 Pyodide（仅当使用 Pyodide 版本时）
     // 现在我们优先使用 FastAPI，Pyodide 作为备选
