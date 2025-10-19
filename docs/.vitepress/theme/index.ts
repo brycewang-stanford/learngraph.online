@@ -5,6 +5,7 @@ import DefaultTheme from 'vitepress/theme'
 import './custom.css'
 import FeedbackButton from './FeedbackButton.vue'
 import SidebarToggle from './SidebarToggle.vue'
+import PythonEditor from '../components/PythonEditor.vue'
 
 export default {
   extends: DefaultTheme,
@@ -15,6 +16,7 @@ export default {
     })
   },
   enhanceApp({ app, router, siteData }) {
-    // ...
+    // 注册全局组件
+    app.component('PythonEditor', PythonEditor)
   }
 } satisfies Theme
