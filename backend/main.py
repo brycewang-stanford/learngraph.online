@@ -13,6 +13,9 @@ import json
 from typing import Optional
 import logging
 
+# 导入代码验证器
+from code_validator import CodeValidator
+
 # 配置日志
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -77,6 +80,7 @@ async def execute_code(request: CodeExecutionRequest):
     执行 Python 代码
 
     安全特性：
+    - 代码安全验证（阻止危险操作）
     - 临时文件隔离
     - 执行超时限制
     - 标准输出/错误捕获
@@ -86,6 +90,16 @@ async def execute_code(request: CodeExecutionRequest):
     start_time = time.time()
 
     logger.info(f"Executing code with timeout: {request.timeout}s")
+
+    # 1. 代码安全验证
+    is_safe, error_message = CodeValidator.validate(request.code)
+    if not is_safe:
+        logger.warning(f"Unsafe code rejected: {error_message}")
+        return CodeExecutionResponse(
+            success=False,
+            error=error_message,
+            execution_time=round(time.time() - start_time, 3)
+        )
 
     # 创建临时文件
     with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as tmp_file:
