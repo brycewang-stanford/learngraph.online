@@ -48,10 +48,22 @@
       </div>
     </div>
 
-    <!-- Pyodide 加载提示 -->
+    <!-- Pyodide 加载进度提示 -->
+    <div v-if="isLoadingPyodide" class="pyodide-loading">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">{{ loadingMessage }}</p>
+        <div class="progress-bar">
+          <div class="progress-fill" :style="{ width: `${loadingProgress}%` }"></div>
+        </div>
+        <small class="loading-hint">首次加载约需 5-10 秒，请耐心等待...</small>
+      </div>
+    </div>
+
+    <!-- Pyodide 加载错误 -->
     <div v-if="pyodideLoadError" class="pyodide-error">
       <p>❌ Pyodide 加载失败: {{ pyodideLoadError }}</p>
-      <button @click="loadPyodide">🔄 重新加载</button>
+      <button @click="() => pyodideManager.initialize()">🔄 重新加载</button>
     </div>
   </div>
 </template>
@@ -60,6 +72,7 @@
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import loader from '@monaco-editor/loader'
 import type * as Monaco from 'monaco-editor'
+import { pyodideManager, type LoadingStatus } from '../utils/pyodide-manager'
 
 // Props
 const props = defineProps<{
@@ -74,11 +87,10 @@ const editor = ref<Monaco.editor.IStandaloneCodeEditor>()
 const output = ref<string[]>([])
 const error = ref<string>('')
 const isRunning = ref(false)
-const isLoadingPyodide = ref(true)
+const isLoadingPyodide = ref(false)
 const pyodideLoadError = ref<string>('')
-
-// Pyodide instance
-let pyodide: any = null
+const loadingProgress = ref(0)
+const loadingMessage = ref('准备 Python 环境...')
 
 // 默认代码
 const defaultCode = `# 欢迎使用 Python 在线编辑器！
@@ -141,47 +153,36 @@ const initMonaco = async () => {
   }
 }
 
-// 加载 Pyodide
-const loadPyodide = async () => {
-  isLoadingPyodide.value = true
-  pyodideLoadError.value = ''
+// 监听 Pyodide 加载状态
+const handleLoadingStatus = (status: LoadingStatus) => {
+  loadingProgress.value = status.progress
+  loadingMessage.value = status.message
 
-  try {
-    // 从 CDN 加载 Pyodide
-    const script = document.createElement('script')
-    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js'
-    script.async = true
-
-    await new Promise<void>((resolve, reject) => {
-      script.onload = () => resolve()
-      script.onerror = () => reject(new Error('Pyodide script 加载失败'))
-      document.head.appendChild(script)
-    })
-
-    // 初始化 Pyodide
-    // @ts-ignore
-    pyodide = await window.loadPyodide({
-      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/',
-    })
-
-    console.log('✅ Pyodide 加载成功, Python 版本:', pyodide.version)
+  if (status.status === 'loading') {
+    isLoadingPyodide.value = true
+  } else if (status.status === 'ready') {
     isLoadingPyodide.value = false
-  } catch (err) {
-    console.error('❌ Pyodide 加载失败:', err)
-    pyodideLoadError.value = `${err}`
+  } else if (status.status === 'error') {
     isLoadingPyodide.value = false
+    pyodideLoadError.value = status.message
+  }
+}
+
+// 检查 Pyodide 状态
+const checkPyodideStatus = () => {
+  const status = pyodideManager.getStatus()
+  if (status === 'ready') {
+    isLoadingPyodide.value = false
+    loadingMessage.value = 'Python 环境已就绪'
+  } else if (status === 'loading') {
+    isLoadingPyodide.value = true
   }
 }
 
 // 运行 Python 代码
 const runCode = async () => {
-  if (!editor.value || !pyodide) {
-    error.value = 'Editor 或 Pyodide 未初始化'
-    return
-  }
-
-  if (isLoadingPyodide.value) {
-    error.value = 'Pyodide 正在加载中，请稍候...'
+  if (!editor.value) {
+    error.value = 'Editor 未初始化'
     return
   }
 
@@ -190,6 +191,9 @@ const runCode = async () => {
   error.value = ''
 
   try {
+    // 获取 Pyodide 实例（如果未加载会自动加载）
+    const pyodide = await pyodideManager.getPyodide()
+
     const code = editor.value.getValue()
 
     // 捕获 print 输出
@@ -245,11 +249,18 @@ defineExpose({
 // 生命周期
 onMounted(async () => {
   await initMonaco()
-  await loadPyodide()
+
+  // 添加加载状态监听器
+  pyodideManager.addListener(handleLoadingStatus)
+
+  // 检查当前状态
+  checkPyodideStatus()
 })
 
 onBeforeUnmount(() => {
   editor.value?.dispose()
+  // 移除监听器
+  pyodideManager.removeListener(handleLoadingStatus)
 })
 
 // 监听 initialCode 变化
@@ -393,6 +404,62 @@ watch(() => props.initialCode, (newCode) => {
 
 .output-line:last-child {
   border-bottom: none;
+}
+
+.pyodide-loading {
+  padding: 32px 16px;
+  background: var(--vp-c-bg-soft);
+  border-top: 1px solid var(--vp-c-divider);
+  text-align: center;
+}
+
+.loading-content {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 4px solid var(--vp-c-divider);
+  border-top-color: var(--vp-c-brand);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin: 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--vp-c-text-1);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--vp-c-divider-light);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 16px 0 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--vp-c-brand) 0%, var(--vp-c-brand-light) 100%);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.loading-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
 }
 
 .pyodide-error {
