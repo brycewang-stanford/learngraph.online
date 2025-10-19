@@ -7,6 +7,13 @@
       </div>
       <div class="code-actions">
         <button
+          @click="toggleEdit"
+          class="action-button edit-button"
+          :title="isEditing ? '还原代码' : '编辑代码（临时修改）'"
+        >
+          {{ isEditing ? '↩️ 还原' : '✏️ 编辑' }}
+        </button>
+        <button
           @click="copyCode"
           class="action-button copy-button"
           :title="copied ? '已复制！' : '复制代码'"
@@ -34,7 +41,17 @@
 
     <!-- 代码展示区 -->
     <div class="code-wrapper">
-      <pre class="code-content"><code class="language-python">{{ code }}</code></pre>
+      <pre
+        class="code-content"
+        :class="{ 'editing': isEditing }"
+      >
+        <code
+          ref="codeElement"
+          class="language-python"
+          :contenteditable="isEditing"
+          @blur="onCodeBlur"
+        >{{ displayCode }}</code>
+      </pre>
     </div>
 
     <!-- 输出区域 -->
@@ -61,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { executeCode } from '../utils/python-api'
 
 const props = defineProps<{
@@ -74,6 +91,14 @@ const error = ref('')
 const isRunning = ref(false)
 const executionTime = ref<number | null>(null)
 const copied = ref(false)
+const isEditing = ref(false)
+const editedCode = ref('')
+const codeElement = ref<HTMLElement | null>(null)
+
+// 显示的代码：编辑模式下显示编辑后的代码，否则显示原始代码
+const displayCode = computed(() => {
+  return isEditing.value && editedCode.value ? editedCode.value : props.code
+})
 
 // 检测代码是否需要 OpenAI API Key
 function needsOpenAIKey(code: string): boolean {
@@ -87,10 +112,30 @@ function needsOpenAIKey(code: string): boolean {
   return patterns.some(pattern => pattern.test(code))
 }
 
+// 切换编辑模式
+function toggleEdit() {
+  isEditing.value = !isEditing.value
+  if (isEditing.value) {
+    // 进入编辑模式
+    editedCode.value = props.code
+  } else {
+    // 退出编辑模式，清空编辑内容
+    editedCode.value = ''
+  }
+}
+
+// 代码失焦时保存编辑内容
+function onCodeBlur() {
+  if (isEditing.value && codeElement.value) {
+    editedCode.value = codeElement.value.textContent || ''
+  }
+}
+
 // 复制代码
 async function copyCode() {
   try {
-    await navigator.clipboard.writeText(props.code)
+    const codeToCopy = isEditing.value && editedCode.value ? editedCode.value : props.code
+    await navigator.clipboard.writeText(codeToCopy)
     copied.value = true
     setTimeout(() => {
       copied.value = false
@@ -108,8 +153,14 @@ async function runCode() {
   executionTime.value = null
 
   try {
-    // 执行代码
-    const result = await executeCode(props.code, 30)
+    // 如果在编辑模式且有编辑内容，先保存编辑内容
+    if (isEditing.value && codeElement.value) {
+      editedCode.value = codeElement.value.textContent || ''
+    }
+
+    // 执行代码：优先执行编辑后的代码
+    const codeToRun = (isEditing.value && editedCode.value) ? editedCode.value : props.code
+    const result = await executeCode(codeToRun, 30)
     executionTime.value = result.execution_time || null
 
     if (result.success) {
@@ -238,6 +289,30 @@ function clearOutput() {
 .clear-button:disabled {
   background: #9ca3af;
   cursor: not-allowed;
+}
+
+.edit-button {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.edit-button:hover {
+  background: var(--vp-c-bg);
+  border-color: #f59e0b;
+}
+
+.code-content.editing {
+  outline: 2px solid #f59e0b;
+  outline-offset: -2px;
+}
+
+.code-content code[contenteditable="true"] {
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
 }
 
 .code-wrapper {
