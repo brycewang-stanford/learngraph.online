@@ -6,8 +6,13 @@
       @click="enterEditMode"
       class="edit-button"
       :disabled="isLoading"
+      title="编辑此页"
     >
-      {{ isLoading ? '⏳ 加载中...' : '✏️ 编辑此页' }}
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+      </svg>
+      <span>{{ isLoading ? '加载中...' : '编辑此页' }}</span>
     </button>
 
     <!-- 全屏编辑器 -->
@@ -216,29 +221,85 @@ async function saveToGitHub() {
 
 .edit-button {
   position: fixed;
+  right: 20px;
   bottom: 20px;
-  right: 30px;
-  padding: 16px 28px;
-  font-size: 16px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+  background: #10b981;
   color: white;
   border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 14px;
+
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
   transition: all 0.3s ease;
-  z-index: 999;
+
+  cursor: pointer;
 }
 
 .edit-button:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+}
+
+.edit-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .edit-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.edit-button svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .edit-button {
+    right: 16px;
+    bottom: 16px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .edit-button svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* 超小屏幕只显示图标 */
+@media (max-width: 480px) {
+  .edit-button span {
+    display: none;
+  }
+
+  .edit-button {
+    padding: 12px;
+    border-radius: 50%;
+  }
+}
+
+/* 暗色模式适配 */
+.dark .edit-button {
+  background: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.dark .edit-button:hover:not(:disabled) {
+  background: #059669;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
 
 .editor-fullscreen {
