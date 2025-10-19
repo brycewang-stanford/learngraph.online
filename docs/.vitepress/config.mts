@@ -97,7 +97,7 @@ export default defineConfig({
     },
     
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/brycewang-stanford/langgraph-lightning' }
+      { icon: 'github', link: 'https://github.com/brycewang-stanford/learngraph.online' }
     ],
     
     footer: {
@@ -143,7 +143,7 @@ export default defineConfig({
     },
     
     editLink: {
-      pattern: 'https://github.com/brycewang-stanford/langgraph-lightning/edit/main/:path',
+      pattern: 'https://github.com/brycewang-stanford/learngraph.online/edit/main/:path',
       text: '在 GitHub 上编辑此页'
     }
   },

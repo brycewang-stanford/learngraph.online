@@ -30,5 +30,5 @@ Welcome to the **LangGraph Lightning** feedback discussion area!
 ## 其他联系方式 | Other Contact Methods
 
 - 📧 **Email**: [brycew6m@gmail.com](brycew6m@gmail.com)
-- 🐙 **GitHub Issues**: [项目 Issues 页面](https://github.com/brycewang-stanford/langgraph-lightning/issues)
-- 💬 **GitHub Discussions**：[项目 Discussions 页面](https://github.com/brycewang-stanford/langgraph-lightning/discussions)
+- 🐙 **GitHub Issues**: [项目 Issues 页面](https://github.com/brycewang-stanford/learngraph.online/issues)
+- 💬 **GitHub Discussions**：[项目 Discussions 页面](https://github.com/brycewang-stanford/learngraph.online/discussions)

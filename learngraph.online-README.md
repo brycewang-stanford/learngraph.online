@@ -44,7 +44,7 @@
 本书基于 [LangChain Academy 官方课程](https://github.com/langchain-ai/langchain-academy)，包含以下模块：
 
 ```
-langgraph-lightning/
+learngraph.online/
 ├── module-0/        # 第 0 章：Python 和 LangGraph 基础
 │   ├── 0.1-Python Basics.md
 │   └── 0.2-LangGraph Basics-详细解读.md

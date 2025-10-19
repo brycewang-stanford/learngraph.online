@@ -25,7 +25,7 @@
 
 你可以通过以下方式参与：
 
-1. **GitHub Issues**：报告错误或提出建议：https://github.com/brycewang-stanford/langgraph-lightning/issues
+1. **GitHub Issues**：报告错误或提出建议：https://github.com/brycewang-stanford/learngraph.online/issues
 
 2. **问题反馈按钮**：网站右下角浮动按钮
 

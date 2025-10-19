@@ -15,7 +15,7 @@ hero:
       link: /module-0/0.0-LangGraph-上手案例
     - theme: alt
       text: GitHub 仓库
-      link: https://github.com/brycewang-stanford/langgraph-lightning
+      link: https://github.com/brycewang-stanford/learngraph.online
     - theme: brand
       text: 本书更新-Roadmap
       link: /本书更新-Roadmap
@@ -125,8 +125,8 @@ response = app.invoke({"messages": [("user", "Hello!")]})
 
 欢迎通过以下方式参与：
 
-- [提交 Issue](https://github.com/brycewang-stanford/langgraph-lightning/issues) - 报告错误或提出建议
-- [Pull Request](https://github.com/brycewang-stanford/langgraph-lightning/pulls) - 贡献代码或文档
+- [提交 Issue](https://github.com/brycewang-stanford/learngraph.online/issues) - 报告错误或提出建议
+- [Pull Request](https://github.com/brycewang-stanford/learngraph.online/pulls) - 贡献代码或文档
 - [Email 联系作者](mailto:brycew6m@gmail.com) - 直接反馈
 
 ---

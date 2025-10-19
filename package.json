@@ -1,5 +1,5 @@
 {
-  "name": "langgraph-lightning",
+  "name": "learngraph.online",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,16 +10,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brycewang-stanford/langgraph-lightning.git"
+    "url": "git+https://github.com/brycewang-stanford/learngraph.online.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/brycewang-stanford/langgraph-lightning/issues"
+    "url": "https://github.com/brycewang-stanford/learngraph.online/issues"
   },
-  "homepage": "https://github.com/brycewang-stanford/langgraph-lightning#readme",
+  "homepage": "https://github.com/brycewang-stanford/learngraph.online#readme",
   "devDependencies": {
     "vitepress": "^1.6.4",
     "vue": "^3.5.22"
