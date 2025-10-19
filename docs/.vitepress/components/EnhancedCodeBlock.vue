@@ -40,7 +40,7 @@
     </div>
 
     <!-- 代码展示区 -->
-    <div class="code-wrapper">
+    <div class="code-wrapper" @click="onCodeWrapperClick">
       <pre
         class="code-content"
         :class="{ 'editing': isEditing }"
@@ -112,12 +112,76 @@ function needsOpenAIKey(code: string): boolean {
   return patterns.some(pattern => pattern.test(code))
 }
 
+// 点击代码区域
+function onCodeWrapperClick(event: MouseEvent) {
+  // 保存点击坐标
+  const clickX = event.clientX
+  const clickY = event.clientY
+
+  // 如果还没进入编辑模式，则进入
+  if (!isEditing.value) {
+    isEditing.value = true
+    editedCode.value = props.code
+
+    // 立即等待 DOM 更新
+    nextTick(() => {
+      if (codeElement.value) {
+        // 先聚焦元素
+        codeElement.value.focus()
+
+        // 立即设置光标位置
+        requestAnimationFrame(() => {
+          let range: Range | null = null
+
+          // 尝试使用标准方法
+          if (document.caretRangeFromPoint) {
+            range = document.caretRangeFromPoint(clickX, clickY)
+          }
+          // Safari 兼容
+          else if ((document as any).caretPositionFromPoint) {
+            const position = (document as any).caretPositionFromPoint(clickX, clickY)
+            if (position) {
+              range = document.createRange()
+              range.setStart(position.offsetNode, position.offset)
+              range.collapse(true)
+            }
+          }
+
+          // 应用光标位置
+          if (range) {
+            const selection = window.getSelection()
+            if (selection) {
+              selection.removeAllRanges()
+              selection.addRange(range)
+            }
+          } else {
+            // 降级方案：如果无法定位，至少将光标放在开头
+            const selection = window.getSelection()
+            if (selection && codeElement.value) {
+              const newRange = document.createRange()
+              newRange.setStart(codeElement.value.firstChild || codeElement.value, 0)
+              newRange.collapse(true)
+              selection.removeAllRanges()
+              selection.addRange(newRange)
+            }
+          }
+        })
+      }
+    })
+  }
+}
+
 // 切换编辑模式
 function toggleEdit() {
   isEditing.value = !isEditing.value
   if (isEditing.value) {
     // 进入编辑模式
     editedCode.value = props.code
+    nextTick(() => {
+      if (codeElement.value) {
+        codeElement.value.focus()
+      }
+    })
   } else {
     // 退出编辑模式，清空编辑内容
     editedCode.value = ''
@@ -308,16 +372,28 @@ function clearOutput() {
 }
 
 .code-content code[contenteditable="true"] {
-  cursor: text;
+  cursor: text !important;
   user-select: text;
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;
+  caret-color: #10b981;
+  outline: none;
+}
+
+.code-content code[contenteditable="true"]:focus {
+  outline: none;
 }
 
 .code-wrapper {
   background: #1e1e1e;
   overflow-x: auto;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.code-wrapper:hover:not(:has(.code-content.editing)) {
+  background: #252525;
 }
 
 .code-content {
