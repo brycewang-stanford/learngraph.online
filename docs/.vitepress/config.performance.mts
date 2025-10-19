@@ -28,9 +28,19 @@ export const performanceConfig = {
 
   // Vite 优化
   vite: {
+    // SSR 配置 - 修复 mark.js 构建问题
+    ssr: {
+      noExternal: ['mark.js']
+    },
+
+    // 模块解析配置
+    resolve: {
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
+    },
+
     optimizeDeps: {
       // 预构建依赖
-      include: ['vue'],
+      include: ['vue', 'mark.js'],
       // 排除大型依赖
       exclude: ['@monaco-editor/loader', 'monaco-editor']
     },

@@ -106,29 +106,30 @@ export default defineConfig({
       copyright: 'Copyright © 2025-present 王几行XING（Bryce Wang）'
     },
     
-    search: {
-      provider: 'local',
-      options: {
-        locales: {
-          root: {
-            translations: {
-              button: {
-                buttonText: '搜索文档',
-                buttonAriaLabel: '搜索文档'
-              },
-              modal: {
-                noResultsText: '无法找到相关结果',
-                resetButtonTitle: '清除查询条件',
-                footer: {
-                  selectText: '选择',
-                  navigateText: '切换'
-                }
-              }
-            }
-          }
-        }
-      }
-    },
+    // 暂时禁用本地搜索（mark.js ESM 构建问题）
+    // search: {
+    //   provider: 'local',
+    //   options: {
+    //     locales: {
+    //       root: {
+    //         translations: {
+    //           button: {
+    //             buttonText: '搜索文档',
+    //             buttonAriaLabel: '搜索文档'
+    //           },
+    //           modal: {
+    //             noResultsText: '无法找到相关结果',
+    //             resetButtonTitle: '清除查询条件',
+    //             footer: {
+    //               selectText: '选择',
+    //               navigateText: '切换'
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // },
     
     docFooter: {
       prev: '上一页',
@@ -156,7 +157,7 @@ export default defineConfig({
       dark: 'github-dark'
     }
   },
-  
+
   // 设置文档根目录为项目根目录，这样可以直接访问 module-x 目录
   srcDir: '..'
 })
