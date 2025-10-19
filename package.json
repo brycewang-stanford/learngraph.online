@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@monaco-editor/loader": "^1.6.1",
+    "@monaco-editor/react": "^4.7.0",
     "monaco-editor": "^0.54.0"
   }
 }

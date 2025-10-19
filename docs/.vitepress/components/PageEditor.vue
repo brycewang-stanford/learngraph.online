@@ -50,7 +50,19 @@ const commitMessage = ref('')
 const currentFilePath = ref('')
 
 onMounted(() => {
-  isAdminUser.value = isAdmin()
+  // 检查管理员状态
+  const adminStatus = isAdmin()
+  const hasToken = !!localStorage.getItem('github_token')
+  const isAdminFlag = localStorage.getItem('is_admin')
+
+  console.log('[PageEditor] 检查管理员状态:', {
+    isAdmin: adminStatus,
+    hasToken: hasToken,
+    isAdminFlag: isAdminFlag,
+    token: localStorage.getItem('github_token')?.substring(0, 20) + '...'
+  })
+
+  isAdminUser.value = adminStatus
   updateFilePath()
 })
 
