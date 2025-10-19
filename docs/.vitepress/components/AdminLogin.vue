@@ -56,8 +56,6 @@ async function handleOAuthCallback(code: string) {
 
       // 清除 URL 中的 code 参数并刷新页面以显示编辑按钮
       window.history.replaceState({}, document.title, window.location.pathname)
-
-      alert('登录成功！页面将刷新以显示编辑功能。')
       window.location.reload()
     } else {
       alert('您不是管理员，无法登录。')
