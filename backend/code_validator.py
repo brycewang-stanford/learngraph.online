@@ -12,9 +12,15 @@ class CodeValidator:
 
     # 危险的模块和函数（黑名单）
     DANGEROUS_IMPORTS = {
-        'os', 'sys', 'subprocess', 'shutil', 'socket', 'urllib',
+        'os', 'subprocess', 'shutil', 'socket', 'urllib',
         'requests', 'http', 'ftplib', 'smtplib', 'pickle', 'shelve',
         '__import__', 'importlib', 'ctypes', 'multiprocessing'
+    }
+
+    # 允许的 sys 模块只读属性（安全的信息获取）
+    SAFE_SYS_ATTRIBUTES = {
+        'version', 'version_info', 'platform', 'maxsize',
+        'byteorder', 'api_version', 'implementation'
     }
 
     # 危险的内置函数
@@ -31,8 +37,8 @@ class CodeValidator:
 
     # 危险的字符串模式（正则表达式）
     DANGEROUS_PATTERNS = [
-        r'import\s+(os|sys|subprocess|socket|pickle)',  # 危险导入
-        r'from\s+(os|sys|subprocess|socket)\s+import',  # from ... import
+        r'import\s+(os|subprocess|socket|pickle)',  # 危险导入（移除 sys）
+        r'from\s+(os|subprocess|socket)\s+import',  # from ... import（移除 sys）
         r'__\w+__',  # 魔术方法/属性
         r'\.{2,}/',  # 路径遍历 ../
         r'/etc/',  # 系统目录
@@ -47,7 +53,7 @@ class CodeValidator:
     ALLOWED_MODULES = {
         'math', 'random', 'datetime', 'time', 'json', 'collections',
         'itertools', 'functools', 'operator', 'string', 're',
-        'statistics', 'decimal', 'fractions'
+        'statistics', 'decimal', 'fractions', 'sys'  # 添加 sys（仅限只读属性）
     }
 
     @classmethod
@@ -107,6 +113,11 @@ class CodeValidator:
                 if node.attr in cls.DANGEROUS_ATTRIBUTES:
                     return False, f"❌ 不允许访问属性：{node.attr}（安全限制）"
 
+                # 检查 sys 模块的属性访问
+                if isinstance(node.value, ast.Name) and node.value.id == 'sys':
+                    if node.attr not in cls.SAFE_SYS_ATTRIBUTES:
+                        return False, f"❌ 不允许访问 sys.{node.attr}（仅支持只读信息属性，如 sys.version）"
+
             # 检查循环深度（防止死循环）
             if isinstance(node, ast.While):
                 # 简单检测 while True
@@ -142,7 +153,12 @@ import math
 print(f"π = {math.pi}")
 print(f"sin(π/2) = {math.sin(math.pi/2)}")
 
-# 3. 列表和循环
+# 3. 系统信息（只读）
+import sys
+print(f"Python 版本: {sys.version}")
+print(f"平台: {sys.platform}")
+
+# 4. 列表和循环
 numbers = [1, 2, 3, 4, 5]
 total = sum(numbers)
 print(f"总和: {total}")
@@ -150,17 +166,18 @@ print(f"总和: {total}")
 for i in range(5):
     print(f"第 {i+1} 次循环")
 
-# 4. 字符串处理
+# 5. 字符串处理
 text = "Hello, Python!"
 print(text.upper())
 print(text.split())
 
-# 5. 随机数
+# 6. 随机数
 import random
 print(f"随机数: {random.randint(1, 100)}")
 
 # ❌ 不支持的代码：
-# - import os, sys, subprocess (系统操作)
+# - import os, subprocess (系统操作)
+# - sys.exit(), sys.argv (危险的 sys 功能)
 # - open(), eval(), exec() (危险函数)
 # - while True (死循环)
 # - 文件读写、网络请求
@@ -173,6 +190,9 @@ if __name__ == "__main__":
     test_cases = [
         ("print('Hello')", True),
         ("import math\nprint(math.pi)", True),
+        ("import sys\nprint(sys.version)", True),  # 新增：允许 sys.version
+        ("import sys\nprint(sys.platform)", True),  # 新增：允许 sys.platform
+        ("import sys\nsys.exit()", False),  # 不允许 sys.exit()
         ("import os\nos.system('ls')", False),
         ("eval('1+1')", False),
         ("while True: pass", False),

@@ -51,8 +51,19 @@ export default {
  */
 function enhancePythonCodeBlocks(app: any) {
   try {
-    // 查找所有 Python 代码块
-    const codeBlocks = document.querySelectorAll('pre code.language-python')
+    // 调试：查找所有可能的代码块
+    const allCodeBlocks = document.querySelectorAll('div[class*="language-"]')
+    const allPreBlocks = document.querySelectorAll('pre')
+    console.log(`[EnhancedCodeBlock] Found ${allCodeBlocks.length} language-* divs`)
+    console.log(`[EnhancedCodeBlock] Found ${allPreBlocks.length} pre elements`)
+
+    // 查找所有 Python 代码块 - 尝试多种选择器
+    let codeBlocks = document.querySelectorAll('div.language-python pre code')
+
+    if (codeBlocks.length === 0) {
+      // 备用选择器
+      codeBlocks = document.querySelectorAll('pre code.language-python')
+    }
 
     console.log(`[EnhancedCodeBlock] Found ${codeBlocks.length} Python code blocks`)
 
