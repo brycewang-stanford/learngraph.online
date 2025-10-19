@@ -110,6 +110,9 @@ function getFilePath(): string {
     path = path.substring(1)
   }
 
+  // URL 解码：将 %E5%9F%BA%E7%A1%80 解码为中文字符
+  path = decodeURIComponent(path)
+
   // 转换为 .md 文件路径
   // 注意：文件在项目根目录，不在 docs/ 文件夹下
   if (path === '' || path === '/') {
