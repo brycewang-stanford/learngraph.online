@@ -216,7 +216,7 @@ async function saveToGitHub() {
 
 .edit-button {
   position: fixed;
-  bottom: 30px;
+  bottom: 20px;
   right: 30px;
   padding: 16px 28px;
   font-size: 16px;
