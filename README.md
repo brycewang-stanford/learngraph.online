@@ -1,4 +1,4 @@
-# LangGraph 详解与飞速上手
+# 《智能体搭建与 LangGraph飞速上手》
 
 > 基于 LangChain Academy 官方课程的深度解读与工程实战指南
 
