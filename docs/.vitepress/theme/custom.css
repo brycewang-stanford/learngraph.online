@@ -120,3 +120,17 @@ div.language-python > button:not(.copy) {
 div.language-python pre code {
   color: #00ff00 !important;
 }
+
+/* === Python 代码块编辑功能样式 === */
+/* 编辑按钮悬停效果 */
+.code-edit-btn:hover {
+  opacity: 0.9 !important;
+  transform: scale(1.05) !important;
+  transition: all 0.2s !important;
+}
+
+/* 编辑模式下的代码块样式 */
+div.language-python pre code[contenteditable="true"] {
+  cursor: text !important;
+  user-select: text !important;
+}

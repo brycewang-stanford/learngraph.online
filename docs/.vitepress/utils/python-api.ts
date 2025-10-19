@@ -27,11 +27,21 @@ export interface ExecuteCodeResponse {
  */
 export async function executeCode(code: string, timeout: number = 10): Promise<ExecuteCodeResponse> {
   try {
+    // 从 localStorage 读取 OpenAI API Key（如果有的话）
+    const openaiKey = localStorage.getItem('openai_api_key')
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    }
+
+    // 如果有 API Key，添加到请求头
+    if (openaiKey) {
+      headers['X-OpenAI-API-Key'] = openaiKey
+    }
+
     const response = await fetch(`${API_BASE_URL}/execute`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         code,
         timeout,

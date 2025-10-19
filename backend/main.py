@@ -3,7 +3,7 @@ FastAPI 后端服务 - Python 代码执行 API
 提供安全的 Python 代码执行环境
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import subprocess
@@ -75,7 +75,10 @@ async def health_check():
 
 
 @app.post("/execute", response_model=CodeExecutionResponse)
-async def execute_code(request: CodeExecutionRequest):
+async def execute_code(
+    request: CodeExecutionRequest,
+    x_openai_api_key: Optional[str] = Header(None)
+):
     """
     执行 Python 代码
 
@@ -107,19 +110,28 @@ async def execute_code(request: CodeExecutionRequest):
         tmp_file_path = tmp_file.name
 
     try:
+        # 构建环境变量
+        env = {
+            'PYTHONDONTWRITEBYTECODE': '1',
+            'PYTHONUNBUFFERED': '1',
+        }
+
+        # 如果提供了 OpenAI API Key，添加到环境变量
+        if x_openai_api_key:
+            env['OPENAI_API_KEY'] = x_openai_api_key
+            logger.info("OpenAI API Key provided")
+
         # 执行 Python 代码
-        # 在生产环境中，这里应该使用 Docker 容器
-        # 但为了开发和测试，先使用受限的 subprocess
+        # 使用当前 Python 解释器（sys.executable）确保使用虚拟环境
+        import sys
+        python_executable = sys.executable
+
         result = subprocess.run(
-            ['python3', tmp_file_path],
+            [python_executable, tmp_file_path],
             capture_output=True,
             text=True,
             timeout=request.timeout,
-            # 安全选项
-            env={
-                'PYTHONDONTWRITEBYTECODE': '1',
-                'PYTHONUNBUFFERED': '1',
-            }
+            env=env
         )
 
         execution_time = time.time() - start_time

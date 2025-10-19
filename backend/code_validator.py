@@ -51,9 +51,19 @@ class CodeValidator:
 
     # 允许的教学用模块（白名单）
     ALLOWED_MODULES = {
+        # Python 标准库
         'math', 'random', 'datetime', 'time', 'json', 'collections',
         'itertools', 'functools', 'operator', 'string', 're',
-        'statistics', 'decimal', 'fractions', 'sys'  # 添加 sys（仅限只读属性）
+        'statistics', 'decimal', 'fractions', 'sys',
+        # LangChain 相关
+        'langchain', 'langchain_openai', 'langchain_anthropic', 'langchain_core',
+        'langchain_community', 'langchain_experimental',
+        # LangGraph 相关
+        'langgraph', 'langgraph_checkpoint', 'langgraph_sdk',
+        # OpenAI 和 Anthropic
+        'openai', 'anthropic',
+        # 其他常用 AI 库
+        'typing', 'typing_extensions', 'pydantic', 'enum'
     }
 
     @classmethod
@@ -98,7 +108,8 @@ class CodeValidator:
                     module_name = node.module.split('.')[0]
                     if module_name in cls.DANGEROUS_IMPORTS:
                         return False, f"❌ 不允许导入模块：{node.module}（安全限制）"
-                    if module_name not in cls.ALLOWED_MODULES:
+                    # 只允许白名单模块（与上面的 import 检查保持一致）
+                    if module_name not in cls.ALLOWED_MODULES and module_name not in {'builtins'}:
                         return False, f"❌ 不允许导入模块：{node.module}（仅支持常用数学和工具库）"
 
             # 检查函数调用

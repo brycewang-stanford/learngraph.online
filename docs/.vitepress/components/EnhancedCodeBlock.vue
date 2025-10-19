@@ -4,12 +4,8 @@
     <div class="code-header">
       <div class="code-info">
         <span class="language-badge">🐍 Python</span>
-        <span v-if="needsApiKeys" class="api-required-badge" title="此代码需要 API Key">
-          🔑 需要 API Key
-        </span>
       </div>
       <div class="code-actions">
-        <ApiKeyManager v-if="needsApiKeys" />
         <button
           @click="copyCode"
           class="action-button copy-button"
@@ -19,9 +15,9 @@
         </button>
         <button
           @click="runCode"
-          :disabled="isRunning || (needsApiKeys && !hasRequiredKeys)"
+          :disabled="isRunning"
           class="action-button run-button"
-          :title="getRunButtonTitle()"
+          :title="isRunning ? '代码执行中...' : '点击运行 Python 代码'"
         >
           {{ isRunning ? '⏳ 运行中...' : '▶️ 运行代码' }}
         </button>
@@ -39,17 +35,6 @@
     <!-- 代码展示区 -->
     <div class="code-wrapper">
       <pre class="code-content"><code class="language-python">{{ code }}</code></pre>
-    </div>
-
-    <!-- API Key 缺失提示 -->
-    <div v-if="needsApiKeys && !hasRequiredKeys" class="api-key-warning">
-      <p>⚠️ 此代码需要 API Key，请点击 <strong>🔑 API Keys</strong> 按钮配置</p>
-      <p class="warning-detail">
-        需要：
-        <span v-if="requiredKeys.openai">OpenAI API Key</span>
-        <span v-if="requiredKeys.openai && requiredKeys.anthropic"> 和 </span>
-        <span v-if="requiredKeys.anthropic">Anthropic API Key</span>
-      </p>
     </div>
 
     <!-- 输出区域 -->
@@ -76,15 +61,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import ApiKeyManager from './ApiKeyManager.vue'
+import { ref } from 'vue'
 import { executeCode } from '../utils/python-api'
-import {
-  getAllApiKeys,
-  hasApiKey,
-  detectRequiredApiKeys,
-  injectApiKeys
-} from '../utils/api-key-storage'
 
 const props = defineProps<{
   code: string
@@ -97,29 +75,16 @@ const isRunning = ref(false)
 const executionTime = ref<number | null>(null)
 const copied = ref(false)
 
-// 检测代码是否需要 API Key
-const requiredKeys = computed(() => detectRequiredApiKeys(props.code))
-const needsApiKeys = computed(() => requiredKeys.value.needsOpenAI || requiredKeys.value.needsAnthropic)
-
-// 检查是否有所需的 API Key
-const hasRequiredKeys = computed(() => {
-  if (requiredKeys.value.needsOpenAI && !hasApiKey('openai')) {
-    return false
-  }
-  if (requiredKeys.value.needsAnthropic && !hasApiKey('anthropic')) {
-    return false
-  }
-  return true
-})
-
-function getRunButtonTitle(): string {
-  if (isRunning.value) {
-    return '代码执行中...'
-  }
-  if (needsApiKeys.value && !hasRequiredKeys.value) {
-    return '请先配置 API Key'
-  }
-  return '点击运行 Python 代码'
+// 检测代码是否需要 OpenAI API Key
+function needsOpenAIKey(code: string): boolean {
+  const patterns = [
+    /from\s+langchain_openai/,
+    /from\s+openai/,
+    /import\s+openai/,
+    /ChatOpenAI/,
+    /OpenAI\(/
+  ]
+  return patterns.some(pattern => pattern.test(code))
 }
 
 // 复制代码
@@ -137,35 +102,33 @@ async function copyCode() {
 
 // 运行代码
 async function runCode() {
-  if (needsApiKeys.value && !hasRequiredKeys.value) {
-    error.value = '❌ 请先配置 API Key（点击右上角 🔑 API Keys 按钮）'
-    return
-  }
-
   isRunning.value = true
   output.value = ''
   error.value = ''
   executionTime.value = null
 
   try {
-    // 获取 API Keys
-    const keys = getAllApiKeys()
-
-    // 注入 API Keys 到代码中
-    let codeToExecute = props.code
-    if (needsApiKeys.value) {
-      codeToExecute = injectApiKeys(props.code, keys)
-      console.log('[Code Execution] API Keys injected')
-    }
-
     // 执行代码
-    const result = await executeCode(codeToExecute, 30)
+    const result = await executeCode(props.code, 30)
     executionTime.value = result.execution_time || null
 
     if (result.success) {
       output.value = result.output || '✅ 代码执行成功（无输出）'
     } else {
-      error.value = result.error || '执行失败'
+      // 检查是否是 API Key 相关错误
+      const errorMsg = result.error || '执行失败'
+
+      // 如果代码需要 OpenAI 但出现认证错误，提示用户配置 API Key
+      if (needsOpenAIKey(props.code) &&
+          (errorMsg.includes('API key') ||
+           errorMsg.includes('authentication') ||
+           errorMsg.includes('OPENAI_API_KEY') ||
+           errorMsg.includes('401') ||
+           errorMsg.includes('Unauthorized'))) {
+        error.value = `❌ 需要 OpenAI API Key\n\n${errorMsg}\n\n💡 请访问导航栏的 "⚡ Python 运行器" 页面配置 API Key`
+      } else {
+        error.value = errorMsg
+      }
     }
   } catch (err: any) {
     error.value = err.message || String(err)
@@ -214,14 +177,6 @@ function clearOutput() {
   color: var(--vp-c-text-1);
   padding: 4px 10px;
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  border-radius: 4px;
-}
-
-.api-required-badge {
-  font-size: 12px;
-  padding: 3px 8px;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: white;
   border-radius: 4px;
 }
@@ -306,33 +261,6 @@ function clearOutput() {
   white-space: pre;
 }
 
-.api-key-warning {
-  padding: 16px;
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border-top: 1px solid var(--vp-c-divider);
-  border-bottom: 1px solid var(--vp-c-divider);
-}
-
-.api-key-warning p {
-  margin: 4px 0;
-  font-size: 14px;
-  color: #92400e;
-}
-
-.api-key-warning strong {
-  font-weight: 600;
-}
-
-.warning-detail {
-  font-size: 12px !important;
-  color: #78350f !important;
-  margin-top: 8px !important;
-}
-
-.warning-detail span {
-  font-weight: 600;
-}
-
 .output-wrapper {
   border-top: 1px solid var(--vp-c-divider);
 }
@@ -391,18 +319,6 @@ function clearOutput() {
 }
 
 /* 暗色主题 */
-.dark .api-key-warning {
-  background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
-}
-
-.dark .api-key-warning p {
-  color: #fef3c7;
-}
-
-.dark .warning-detail {
-  color: #fde68a !important;
-}
-
 .dark .error-output {
   background: #7f1d1d;
   border-left-color: #ef4444;
