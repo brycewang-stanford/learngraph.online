@@ -1,17 +1,23 @@
 """
-FastAPI 后端服务 - Python 代码执行 API
-提供安全的 Python 代码执行环境
+FastAPI 后端服务 - Python 代码执行 API + GitHub 编辑功能
+提供安全的 Python 代码执行环境和 GitHub 仓库编辑功能
 """
 
-from fastapi import FastAPI, HTTPException, Header
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import subprocess
 import tempfile
 import os
 import json
-from typing import Optional
+from typing import Optional, Dict
 import logging
+import requests
+from github import Github, GithubException
+from dotenv import load_dotenv
+
+# 加载环境变量
+load_dotenv()
 
 # 导入代码验证器
 from code_validator import CodeValidator
@@ -20,10 +26,17 @@ from code_validator import CodeValidator
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# GitHub 配置
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
+GITHUB_REPO_OWNER = "brycewang-stanford"
+GITHUB_REPO_NAME = "learngraph.online"
+ADMIN_EMAIL = "brycew6m@gmail.com"
+
 app = FastAPI(
-    title="Python Code Executor API",
-    description="安全的 Python 代码执行服务",
-    version="1.0.0"
+    title="Python Code Executor API + GitHub Editor",
+    description="安全的 Python 代码执行服务 + GitHub 仓库编辑功能",
+    version="2.0.0"
 )
 
 # 配置 CORS
@@ -257,6 +270,220 @@ async def execute_code_docker(request: CodeExecutionRequest):
             error=f"执行错误: {str(e)}",
             execution_time=round(execution_time, 3)
         )
+
+
+# ============================================
+# GitHub 认证和编辑功能
+# ============================================
+
+# GitHub 相关数据模型
+class GitHubAuthRequest(BaseModel):
+    code: str = Field(..., description="GitHub OAuth 授权码")
+
+class GitHubAuthResponse(BaseModel):
+    access_token: str
+    user: Dict
+    is_admin: bool
+
+class FileUpdateRequest(BaseModel):
+    file_path: str = Field(..., description="文件路径（相对于仓库根目录）")
+    content: str = Field(..., description="新的文件内容")
+    commit_message: str = Field(..., description="提交信息")
+
+class FileUpdateResponse(BaseModel):
+    success: bool
+    message: str
+    commit_sha: Optional[str] = None
+
+
+# 验证管理员身份
+async def verify_admin(authorization: Optional[str] = Header(None)) -> str:
+    """验证用户是否为管理员（仅 brycew6m@gmail.com）"""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="未授权：缺少访问令牌")
+
+    token = authorization.replace("Bearer ", "")
+
+    try:
+        # 使用 token 获取用户信息
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get("https://api.github.com/user", headers=headers)
+
+        if response.status_code != 200:
+            raise HTTPException(status_code=401, detail="未授权：无效的访问令牌")
+
+        user_data = response.json()
+        user_email = user_data.get("email")
+
+        # 如果公开邮箱为空，尝试获取主邮箱
+        if not user_email:
+            email_response = requests.get("https://api.github.com/user/emails", headers=headers)
+            if email_response.status_code == 200:
+                emails = email_response.json()
+                primary_email = next((e for e in emails if e.get("primary")), None)
+                if primary_email:
+                    user_email = primary_email.get("email")
+
+        # 验证是否为管理员邮箱
+        if user_email != ADMIN_EMAIL:
+            logger.warning(f"Non-admin user attempted access: {user_email}")
+            raise HTTPException(status_code=403, detail="禁止访问：仅限管理员")
+
+        logger.info(f"Admin verified: {user_email}")
+        return token
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Admin verification error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"验证失败: {str(e)}")
+
+
+@app.post("/auth/github", response_model=GitHubAuthResponse)
+async def github_auth(request: GitHubAuthRequest):
+    """
+    GitHub OAuth 认证
+    使用授权码换取访问令牌
+    """
+    try:
+        # 使用授权码换取访问令牌
+        token_url = "https://github.com/login/oauth/access_token"
+        token_data = {
+            "client_id": GITHUB_CLIENT_ID,
+            "client_secret": GITHUB_CLIENT_SECRET,
+            "code": request.code,
+        }
+        token_headers = {"Accept": "application/json"}
+
+        token_response = requests.post(token_url, data=token_data, headers=token_headers)
+        token_json = token_response.json()
+
+        if "error" in token_json:
+            raise HTTPException(status_code=400, detail=f"GitHub 认证失败: {token_json.get('error_description', 'Unknown error')}")
+
+        access_token = token_json.get("access_token")
+        if not access_token:
+            raise HTTPException(status_code=400, detail="未能获取访问令牌")
+
+        # 获取用户信息
+        user_headers = {"Authorization": f"Bearer {access_token}"}
+        user_response = requests.get("https://api.github.com/user", headers=user_headers)
+        user_data = user_response.json()
+
+        user_email = user_data.get("email")
+
+        # 如果公开邮箱为空，获取主邮箱
+        if not user_email:
+            email_response = requests.get("https://api.github.com/user/emails", headers=user_headers)
+            if email_response.status_code == 200:
+                emails = email_response.json()
+                primary_email = next((e for e in emails if e.get("primary")), None)
+                if primary_email:
+                    user_email = primary_email.get("email")
+
+        # 检查是否为管理员
+        is_admin = user_email == ADMIN_EMAIL
+
+        if not is_admin:
+            logger.warning(f"Non-admin login attempt: {user_email}")
+            raise HTTPException(status_code=403, detail="仅限管理员登录")
+
+        logger.info(f"Admin logged in: {user_email}")
+
+        return GitHubAuthResponse(
+            access_token=access_token,
+            user=user_data,
+            is_admin=is_admin
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"GitHub auth error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"认证错误: {str(e)}")
+
+
+@app.post("/github/update-file", response_model=FileUpdateResponse)
+async def update_file(
+    request: FileUpdateRequest,
+    token: str = Depends(verify_admin)
+):
+    """
+    更新 GitHub 仓库中的文件
+    仅限管理员使用
+    """
+    try:
+        # 使用 token 创建 GitHub 客户端
+        g = Github(token)
+        repo = g.get_repo(f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}")
+
+        # 获取文件
+        try:
+            file = repo.get_contents(request.file_path)
+            # 更新现有文件
+            result = repo.update_file(
+                path=request.file_path,
+                message=request.commit_message,
+                content=request.content,
+                sha=file.sha,
+                branch="main"
+            )
+            logger.info(f"File updated: {request.file_path}")
+        except GithubException as e:
+            if e.status == 404:
+                # 文件不存在，创建新文件
+                result = repo.create_file(
+                    path=request.file_path,
+                    message=request.commit_message,
+                    content=request.content,
+                    branch="main"
+                )
+                logger.info(f"File created: {request.file_path}")
+            else:
+                raise
+
+        return FileUpdateResponse(
+            success=True,
+            message="文件更新成功",
+            commit_sha=result["commit"].sha
+        )
+
+    except GithubException as e:
+        logger.error(f"GitHub API error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"GitHub 操作失败: {str(e)}")
+    except Exception as e:
+        logger.error(f"File update error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"文件更新失败: {str(e)}")
+
+
+@app.get("/github/file/{file_path:path}")
+async def get_file(file_path: str, token: str = Depends(verify_admin)):
+    """
+    获取 GitHub 仓库中的文件内容
+    仅限管理员使用
+    """
+    try:
+        g = Github(token)
+        repo = g.get_repo(f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}")
+
+        file = repo.get_contents(file_path)
+        content = file.decoded_content.decode('utf-8')
+
+        return {
+            "success": True,
+            "content": content,
+            "sha": file.sha,
+            "path": file.path
+        }
+
+    except GithubException as e:
+        if e.status == 404:
+            raise HTTPException(status_code=404, detail="文件不存在")
+        logger.error(f"GitHub API error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"GitHub 操作失败: {str(e)}")
+    except Exception as e:
+        logger.error(f"File get error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"获取文件失败: {str(e)}")
 
 
 if __name__ == "__main__":

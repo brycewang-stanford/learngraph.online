@@ -8,6 +8,8 @@ import SidebarToggle from './SidebarToggle.vue'
 import PythonEditor from '../components/PythonEditor.vue'
 import PythonEditorAPI from '../components/PythonEditorAPI.vue'
 import PythonEditorLite from '../components/PythonEditorLite.vue'
+import AdminLogin from '../components/AdminLogin.vue'
+import PageEditor from '../components/PageEditor.vue'
 // EnhancedCodeBlock 和 ApiKeyManager 将在客户端动态导入
 import { pyodideManager } from '../utils/pyodide-manager'
 import { enableCodeBlockEditing } from '../utils/code-block-editor'
@@ -17,7 +19,8 @@ export default {
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
-      'layout-bottom': () => [h(FeedbackButton), h(SidebarToggle)]
+      'nav-bar-content-after': () => h(AdminLogin),
+      'layout-bottom': () => [h(FeedbackButton), h(SidebarToggle), h(PageEditor)]
     })
   },
   enhanceApp({ app, router, siteData }) {
