@@ -110,13 +110,13 @@ const handleKeydown = (e: KeyboardEvent) => {
   // Tab 键插入空格
   if (e.key === 'Tab') {
     e.preventDefault()
-    const start = (e.target as HTMLTextAreaElement).selectionStart
-    const end = (e.target as HTMLTextAreaElement).selectionEnd
+    const textarea = e.target as HTMLTextAreaElement
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
     code.value = code.value.substring(0, start) + '    ' + code.value.substring(end)
     // 恢复光标位置
     setTimeout(() => {
-      (e.target as HTMLTextAreaElement).selectionStart = start + 4
-      (e.target as HTMLTextAreaElement).selectionEnd = start + 4
+      textarea.setSelectionRange(start + 4, start + 4)
     })
   }
 }
