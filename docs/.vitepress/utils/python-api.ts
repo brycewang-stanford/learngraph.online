@@ -4,7 +4,11 @@
  */
 
 // API 配置
+// 生产环境：使用 Render 部署的后端
+// 开发环境：使用本地后端
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+console.log('[Python API] Using backend:', API_BASE_URL)
 
 export interface ExecuteCodeRequest {
   code: string

@@ -3,6 +3,7 @@
   "outputDirectory": "docs/.vitepress/dist",
   "framework": "vitepress",
   "env": {
-    "VITE_BASE_PATH": "/"
+    "VITE_BASE_PATH": "/",
+    "VITE_API_URL": "https://learngraph-online.onrender.com"
   }
 }
