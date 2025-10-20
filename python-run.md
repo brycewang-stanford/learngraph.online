@@ -153,9 +153,9 @@ def answer_node(state: State):
     return {"answer": response.content}
 
 graph = StateGraph(State)
-graph.add_node("answer", answer_node)
-graph.add_edge(START, "answer")
-graph.add_edge("answer", END)
+graph.add_node("answer_node", answer_node)  # ✅ 改名
+graph.add_edge(START, "answer_node")
+graph.add_edge("answer_node", END)
 
 app = graph.compile()
 result = app.invoke({"question": "什么是 LangGraph？"})
