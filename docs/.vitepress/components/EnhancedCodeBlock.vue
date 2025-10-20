@@ -1,5 +1,5 @@
 <template>
-  <div class="enhanced-code-block">
+  <div class="enhanced-code-block" ref="codeBlockContainer">
     <!-- 代码块头部工具栏 -->
     <div class="code-header">
       <div class="code-info">
@@ -40,20 +40,26 @@
     </div>
 
     <!-- 代码展示区 -->
-    <div class="code-wrapper" @click="onCodeWrapperClick">
+    <div class="code-wrapper" style="position: relative;">
       <pre
         class="code-content"
         :class="{ 'editing': isEditing }"
       >
         <code
-          ref="codeElement"
           class="language-python"
-          :contenteditable="isEditing"
-          @input="onCodeInput"
-          @blur="onCodeBlur"
           v-html="highlightedCode"
         ></code>
       </pre>
+
+      <!-- 编辑模式：使用 textarea 覆盖层 -->
+      <textarea
+        v-if="isEditing"
+        ref="textareaElement"
+        v-model="editedCode"
+        class="code-editor-overlay"
+        @blur="onCodeBlur"
+        spellcheck="false"
+      ></textarea>
     </div>
 
     <!-- 输出区域 -->
@@ -80,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { executeCode } from '../utils/python-api'
 import { codeToHtml } from 'shiki'
 
@@ -96,8 +102,9 @@ const executionTime = ref<number | null>(null)
 const copied = ref(false)
 const isEditing = ref(false)
 const editedCode = ref('')
-const codeElement = ref<HTMLElement | null>(null)
+const textareaElement = ref<HTMLTextAreaElement | null>(null)
 const highlightedCode = ref('')
+const codeBlockContainer = ref<HTMLElement | null>(null)
 
 // 显示的代码：编辑模式下显示编辑后的代码，否则显示原始代码
 const displayCode = computed(() => {
@@ -123,71 +130,44 @@ async function highlightCode(code: string) {
   }
 }
 
+// 处理点击外部区域退出编辑模式
+function handleClickOutside(event: MouseEvent) {
+  if (!isEditing.value) return
+
+  const target = event.target as Node
+  // 如果点击的不是代码块容器内的元素，退出编辑模式
+  if (codeBlockContainer.value && !codeBlockContainer.value.contains(target)) {
+    exitEditMode()
+  }
+}
+
+// 退出编辑模式
+async function exitEditMode() {
+  if (isEditing.value) {
+    // 更新语法高亮
+    if (editedCode.value) {
+      highlightedCode.value = await highlightCode(editedCode.value)
+    }
+
+    // 退出编辑模式
+    isEditing.value = false
+  }
+}
+
 // 在组件挂载时进行语法高亮
 onMounted(async () => {
   highlightedCode.value = await highlightCode(props.code)
+
+  // 添加全局点击事件监听
+  document.addEventListener('click', handleClickOutside)
 })
 
-// 编辑时实时语法高亮
-async function onCodeInput() {
-  if (!codeElement.value) return
+// 组件卸载时移除事件监听
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
-  // 保存光标位置
-  const selection = window.getSelection()
-  const range = selection?.getRangeAt(0)
-  const cursorOffset = range?.startOffset || 0
-  const cursorNode = range?.startContainer
-
-  // 获取纯文本内容
-  const text = codeElement.value.textContent || ''
-  editedCode.value = text
-
-  // 进行语法高亮
-  const highlighted = await highlightCode(text)
-  highlightedCode.value = highlighted
-
-  // 恢复光标位置
-  nextTick(() => {
-    try {
-      if (codeElement.value && selection) {
-        const newRange = document.createRange()
-        // 尝试恢复到原来的位置
-        let targetNode = codeElement.value.firstChild
-        let offset = cursorOffset
-
-        // 递归查找文本节点
-        function findTextNode(node: Node, targetOffset: number): { node: Node, offset: number } | null {
-          if (node.nodeType === Node.TEXT_NODE) {
-            const textLength = node.textContent?.length || 0
-            if (targetOffset <= textLength) {
-              return { node, offset: targetOffset }
-            }
-            return { node, offset: targetOffset - textLength }
-          }
-
-          for (let i = 0; i < node.childNodes.length; i++) {
-            const result = findTextNode(node.childNodes[i], targetOffset)
-            if (result && result.offset <= (result.node.textContent?.length || 0)) {
-              return result
-            }
-            targetOffset -= (node.childNodes[i].textContent?.length || 0)
-          }
-          return null
-        }
-
-        const result = findTextNode(codeElement.value, offset)
-        if (result) {
-          newRange.setStart(result.node, Math.min(result.offset, result.node.textContent?.length || 0))
-          newRange.collapse(true)
-          selection.removeAllRanges()
-          selection.addRange(newRange)
-        }
-      }
-    } catch (err) {
-      console.error('Failed to restore cursor:', err)
-    }
-  })
-}
+// 编辑时已通过 v-model 自动同步，不需要 onCodeInput
 
 // 检测代码是否需要 OpenAI API Key
 function needsOpenAIKey(code: string): boolean {
@@ -201,87 +181,36 @@ function needsOpenAIKey(code: string): boolean {
   return patterns.some(pattern => pattern.test(code))
 }
 
-// 点击代码区域
+// 点击代码区域（不需要了，通过编辑按钮进入编辑）
 function onCodeWrapperClick(event: MouseEvent) {
-  // 保存点击坐标
-  const clickX = event.clientX
-  const clickY = event.clientY
-
-  // 如果还没进入编辑模式，则进入
-  if (!isEditing.value) {
-    isEditing.value = true
-    editedCode.value = props.code
-
-    // 立即等待 DOM 更新
-    nextTick(() => {
-      if (codeElement.value) {
-        // 先聚焦元素
-        codeElement.value.focus()
-
-        // 立即设置光标位置
-        requestAnimationFrame(() => {
-          let range: Range | null = null
-
-          // 尝试使用标准方法
-          if (document.caretRangeFromPoint) {
-            range = document.caretRangeFromPoint(clickX, clickY)
-          }
-          // Safari 兼容
-          else if ((document as any).caretPositionFromPoint) {
-            const position = (document as any).caretPositionFromPoint(clickX, clickY)
-            if (position) {
-              range = document.createRange()
-              range.setStart(position.offsetNode, position.offset)
-              range.collapse(true)
-            }
-          }
-
-          // 应用光标位置
-          if (range) {
-            const selection = window.getSelection()
-            if (selection) {
-              selection.removeAllRanges()
-              selection.addRange(range)
-            }
-          } else {
-            // 降级方案：如果无法定位，至少将光标放在开头
-            const selection = window.getSelection()
-            if (selection && codeElement.value) {
-              const newRange = document.createRange()
-              newRange.setStart(codeElement.value.firstChild || codeElement.value, 0)
-              newRange.collapse(true)
-              selection.removeAllRanges()
-              selection.addRange(newRange)
-            }
-          }
-        })
-      }
-    })
-  }
+  // 不再通过点击进入编辑模式
 }
 
 // 切换编辑模式
 function toggleEdit() {
-  isEditing.value = !isEditing.value
   if (isEditing.value) {
+    // 退出编辑模式
+    exitEditMode()
+  } else {
     // 进入编辑模式
-    editedCode.value = props.code
+    isEditing.value = true
+    editedCode.value = editedCode.value || props.code
     nextTick(() => {
-      if (codeElement.value) {
-        codeElement.value.focus()
+      if (textareaElement.value) {
+        textareaElement.value.focus()
+        // 将光标移到末尾
+        textareaElement.value.setSelectionRange(
+          textareaElement.value.value.length,
+          textareaElement.value.value.length
+        )
       }
     })
-  } else {
-    // 退出编辑模式，清空编辑内容
-    editedCode.value = ''
   }
 }
 
-// 代码失焦时保存编辑内容
+// 代码失焦时（v-model 已自动保存）
 function onCodeBlur() {
-  if (isEditing.value && codeElement.value) {
-    editedCode.value = codeElement.value.textContent || ''
-  }
+  // editedCode 已通过 v-model 自动更新
 }
 
 // 复制代码
@@ -477,12 +406,35 @@ function clearOutput() {
 .code-wrapper {
   background: #1e1e1e;
   overflow-x: auto;
-  cursor: pointer;
   transition: background 0.2s;
 }
 
-.code-wrapper:hover:not(:has(.code-content.editing)) {
-  background: #252525;
+/* Textarea 编辑器覆盖层 */
+.code-editor-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  margin: 0;
+  border: none;
+  outline: 2px solid #f59e0b;
+  outline-offset: -2px;
+  background: rgba(30, 30, 30, 0.98);
+  color: #d4d4d4;
+  font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  resize: none;
+  overflow: auto;
+  white-space: pre;
+  word-wrap: normal;
+  tab-size: 2;
+  -moz-tab-size: 2;
+  caret-color: #10b981;
+  z-index: 5;
 }
 
 .code-content {
