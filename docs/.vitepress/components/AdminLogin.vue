@@ -24,7 +24,12 @@ const user = ref<any>(null)
 
 // GitHub OAuth 配置
 const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID || 'YOUR_CLIENT_ID'
-const REDIRECT_URI = import.meta.env.VITE_GITHUB_REDIRECT_URI || window.location.origin
+
+// 根据环境自动确定回调地址
+const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+const REDIRECT_URI = isLocalDev
+  ? 'http://localhost:5173'
+  : 'https://learngraph.online'
 
 onMounted(() => {
   // 检查是否已登录
