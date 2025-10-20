@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 import os
 import json
+import re
 from typing import Optional, Dict
 import logging
 import requests
@@ -39,14 +40,35 @@ app = FastAPI(
     version="2.0.0"
 )
 
-# 配置 CORS
+# 配置 CORS - 使用正则表达式支持 Vercel 子域名
+def is_allowed_origin(origin: str) -> bool:
+    """检查请求来源是否允许"""
+    allowed_origins = [
+        "http://localhost:5173",
+        "http://localhost:4173",
+        "https://learngraph.online",
+        "https://www.learngraph.online",
+    ]
+
+    # 检查是否在允许列表中
+    if origin in allowed_origins:
+        return True
+
+    # 检查是否是 Vercel 部署域名
+    vercel_pattern = r"^https://.*\.vercel\.app$"
+    if re.match(vercel_pattern, origin):
+        return True
+
+    return False
+
 app.add_middleware(
     CORSMiddleware,
+    allow_origin_regex=r"^https://.*\.vercel\.app$",  # 支持所有 Vercel 子域名
     allow_origins=[
         "http://localhost:5173",  # 本地开发（dev server）
         "http://localhost:4173",  # 本地预览（production preview）
         "https://learngraph.online",  # 生产环境
-        "https://*.vercel.app",  # Vercel 预览部署
+        "https://www.learngraph.online",  # 生产环境 www
     ],
     allow_credentials=True,
     allow_methods=["*"],
