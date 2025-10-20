@@ -129,7 +129,7 @@ function maskKey(key) {
 ```python
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="gpt-5-nano")
+llm = ChatOpenAI(model="gpt-4o-mini")
 response = llm.invoke("用一句话介绍 LangChain")
 print(response.content)
 ```
@@ -148,7 +148,7 @@ class State(TypedDict):
     answer: str
 
 def answer_node(state: State):
-    llm = ChatOpenAI(model="gpt-5-nano")
+    llm = ChatOpenAI(model="gpt-4o-mini")
     response = llm.invoke(state["question"])
     return {"answer": response.content}
 

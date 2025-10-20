@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "LangGraph 飞速上手"
+  name: "智能体系统搭建"
 
   text: "案例先行，通俗易懂"
   tagline: AI时代，理解为王：摒弃技术细节，直达 Agentic AI 思想内核
@@ -101,7 +101,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, MessagesState
 
 def chatbot(state: MessagesState):
-    return {"messages": [ChatOpenAI(model="gpt-5-nano").invoke(state["messages"])]}
+    return {"messages": [ChatOpenAI(model="gpt-4o-mini").invoke(state["messages"])]}
 
 graph = StateGraph(MessagesState)
 graph.add_node("chatbot", chatbot)

@@ -122,7 +122,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 
-model = ChatOpenAI(model="gpt-5-nano", temperature=0)
+model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 def call_model(state: State, config: RunnableConfig):
     # 获取摘要（如果存在）
