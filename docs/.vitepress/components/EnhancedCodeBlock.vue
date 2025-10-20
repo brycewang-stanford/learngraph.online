@@ -4,6 +4,14 @@
     <div class="code-header">
       <div class="code-info">
         <span class="language-badge">🐍 Python</span>
+        <button
+          v-if="editedCode && editedCode !== props.code"
+          @click="resetCode"
+          class="action-button reset-button"
+          title="还原到初始代码"
+        >
+          ↩️ 还原代码
+        </button>
       </div>
       <div class="code-actions">
         <button
@@ -228,6 +236,25 @@ function toggleEdit() {
   }
 }
 
+// 还原代码到初始状态
+async function resetCode() {
+  // 如果在编辑模式，先退出
+  if (isEditing.value) {
+    isEditing.value = false
+  }
+
+  // 清空编辑的代码
+  editedCode.value = ''
+
+  // 重新生成原始代码的语法高亮
+  highlightedCode.value = await highlightCode(props.code)
+
+  // 清空输出
+  output.value = ''
+  error.value = ''
+  executionTime.value = null
+}
+
 // 代码失焦时保存编辑内容
 function onCodeBlur() {
   if (isEditing.value && codeElement.value) {
@@ -334,6 +361,19 @@ function clearOutput() {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border-radius: 4px;
+}
+
+.reset-button {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  border: 1px solid var(--vp-c-divider);
+  font-size: 12px;
+}
+
+.reset-button:hover {
+  background: var(--vp-c-bg);
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
 .code-actions {
