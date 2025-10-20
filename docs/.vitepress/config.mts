@@ -64,11 +64,11 @@ export default defineConfig({
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Source+Code+Pro:wght@400;500&display=swap', rel: 'stylesheet' }],
     // Google Analytics
-    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-RL5HPH60BZ' }],
+    ['script', { async: '', src: 'https://www.googletagmanager.com/gtag/js?id=G-W0FG0ENWH4' }],
     ['script', {}, `window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-RL5HPH60BZ');`]
+      gtag('config', 'G-W0FG0ENWH4');`]
   ],
   
   themeConfig: {
