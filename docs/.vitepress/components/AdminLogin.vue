@@ -78,6 +78,7 @@ function logout() {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  margin-left: 15px;
 }
 
 .login-button {
