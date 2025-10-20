@@ -27,8 +27,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # GitHub 配置
-GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
-GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
+# 支持本地和生产环境两套 OAuth App
+GITHUB_CLIENT_ID_LOCAL = os.getenv("GITHUB_CLIENT_ID_LOCAL")
+GITHUB_CLIENT_SECRET_LOCAL = os.getenv("GITHUB_CLIENT_SECRET_LOCAL")
+GITHUB_CLIENT_ID_PROD = os.getenv("GITHUB_CLIENT_ID_PROD")
+GITHUB_CLIENT_SECRET_PROD = os.getenv("GITHUB_CLIENT_SECRET_PROD")
+
 GITHUB_REPO_OWNER = "brycewang-stanford"
 GITHUB_REPO_NAME = "learngraph.online"
 ADMIN_EMAIL = "brycew6m@gmail.com"
@@ -344,26 +348,47 @@ async def github_auth(request: GitHubAuthRequest):
     """
     GitHub OAuth 认证
     使用授权码换取访问令牌
+    支持本地和生产环境两套 OAuth App
     """
     try:
-        # 使用授权码换取访问令牌
         token_url = "https://github.com/login/oauth/access_token"
-        token_data = {
-            "client_id": GITHUB_CLIENT_ID,
-            "client_secret": GITHUB_CLIENT_SECRET,
-            "code": request.code,
-        }
         token_headers = {"Accept": "application/json"}
 
-        token_response = requests.post(token_url, data=token_data, headers=token_headers)
-        token_json = token_response.json()
+        # 尝试使用两套凭证进行认证
+        credentials = [
+            ("local", GITHUB_CLIENT_ID_LOCAL, GITHUB_CLIENT_SECRET_LOCAL),
+            ("prod", GITHUB_CLIENT_ID_PROD, GITHUB_CLIENT_SECRET_PROD)
+        ]
 
-        if "error" in token_json:
-            raise HTTPException(status_code=400, detail=f"GitHub 认证失败: {token_json.get('error_description', 'Unknown error')}")
+        access_token = None
+        last_error = None
 
-        access_token = token_json.get("access_token")
+        for env_name, client_id, client_secret in credentials:
+            if not client_id or not client_secret:
+                continue
+
+            token_data = {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "code": request.code,
+            }
+
+            token_response = requests.post(token_url, data=token_data, headers=token_headers)
+            token_json = token_response.json()
+
+            if "error" not in token_json and token_json.get("access_token"):
+                access_token = token_json.get("access_token")
+                logger.info(f"GitHub auth successful using {env_name} credentials")
+                break
+            else:
+                last_error = token_json.get('error_description', 'Unknown error')
+                logger.debug(f"Failed to auth with {env_name} credentials: {last_error}")
+
         if not access_token:
-            raise HTTPException(status_code=400, detail="未能获取访问令牌")
+            raise HTTPException(
+                status_code=400,
+                detail=f"GitHub 认证失败: {last_error or 'All credentials failed'}"
+            )
 
         # 获取用户信息
         user_headers = {"Authorization": f"Bearer {access_token}"}
