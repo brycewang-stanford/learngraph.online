@@ -189,3 +189,9 @@ div.language-python pre code[contenteditable="true"] {
   cursor: text !important;
   user-select: text !important;
 }
+
+/* 编辑模式下保留语法高亮样式 */
+.code-content.editing code span {
+  /* 保留所有 Shiki 生成的颜色和样式 */
+  pointer-events: none; /* 防止 span 干扰编辑 */
+}

@@ -49,8 +49,9 @@
           ref="codeElement"
           class="language-python"
           :contenteditable="isEditing"
+          @input="onCodeInput"
           @blur="onCodeBlur"
-          v-html="isEditing ? displayCode : highlightedCode"
+          v-html="highlightedCode"
         ></code>
       </pre>
     </div>
@@ -103,10 +104,10 @@ const displayCode = computed(() => {
   return isEditing.value && editedCode.value ? editedCode.value : props.code
 })
 
-// 在组件挂载时进行语法高亮
-onMounted(async () => {
+// 语法高亮函数
+async function highlightCode(code: string) {
   try {
-    highlightedCode.value = await codeToHtml(props.code, {
+    const html = await codeToHtml(code, {
       lang: 'python',
       themes: {
         light: 'github-light',
@@ -114,15 +115,79 @@ onMounted(async () => {
       }
     })
     // 只提取 code 标签内的内容
-    const match = highlightedCode.value.match(/<code[^>]*>([\s\S]*)<\/code>/)
-    if (match) {
-      highlightedCode.value = match[1]
-    }
+    const match = html.match(/<code[^>]*>([\s\S]*)<\/code>/)
+    return match ? match[1] : code
   } catch (err) {
     console.error('Failed to highlight code:', err)
-    highlightedCode.value = props.code
+    return code
   }
+}
+
+// 在组件挂载时进行语法高亮
+onMounted(async () => {
+  highlightedCode.value = await highlightCode(props.code)
 })
+
+// 编辑时实时语法高亮
+async function onCodeInput() {
+  if (!codeElement.value) return
+
+  // 保存光标位置
+  const selection = window.getSelection()
+  const range = selection?.getRangeAt(0)
+  const cursorOffset = range?.startOffset || 0
+  const cursorNode = range?.startContainer
+
+  // 获取纯文本内容
+  const text = codeElement.value.textContent || ''
+  editedCode.value = text
+
+  // 进行语法高亮
+  const highlighted = await highlightCode(text)
+  highlightedCode.value = highlighted
+
+  // 恢复光标位置
+  nextTick(() => {
+    try {
+      if (codeElement.value && selection) {
+        const newRange = document.createRange()
+        // 尝试恢复到原来的位置
+        let targetNode = codeElement.value.firstChild
+        let offset = cursorOffset
+
+        // 递归查找文本节点
+        function findTextNode(node: Node, targetOffset: number): { node: Node, offset: number } | null {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const textLength = node.textContent?.length || 0
+            if (targetOffset <= textLength) {
+              return { node, offset: targetOffset }
+            }
+            return { node, offset: targetOffset - textLength }
+          }
+
+          for (let i = 0; i < node.childNodes.length; i++) {
+            const result = findTextNode(node.childNodes[i], targetOffset)
+            if (result && result.offset <= (result.node.textContent?.length || 0)) {
+              return result
+            }
+            targetOffset -= (node.childNodes[i].textContent?.length || 0)
+          }
+          return null
+        }
+
+        const result = findTextNode(codeElement.value, offset)
+        if (result) {
+          newRange.setStart(result.node, Math.min(result.offset, result.node.textContent?.length || 0))
+          newRange.collapse(true)
+          selection.removeAllRanges()
+          selection.addRange(newRange)
+        }
+      }
+    } catch (err) {
+      console.error('Failed to restore cursor:', err)
+    }
+  })
+}
 
 // 检测代码是否需要 OpenAI API Key
 function needsOpenAIKey(code: string): boolean {
