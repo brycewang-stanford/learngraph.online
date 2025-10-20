@@ -90,35 +90,80 @@
 /* 调整代码块容器为相对定位 */
 div.language-python {
   position: relative !important;
-  margin-top: 40px !important; /* 为上方的工具栏留出空间 */
+  margin-top: 28px !important; /* 紧凑的上边距 */
+  padding-top: 0 !important; /* 移除顶部内边距，避免代码被遮挡 */
 }
 
-/* 将工具栏移到代码块上方 */
+/* 将工具栏移到代码块上方，紧凑设计 */
 div.language-python > span.lang,
 div.language-python > button,
 div.language-python > .copy {
   position: absolute !important;
-  top: -36px !important; /* 移到代码块上方 */
+  top: -26px !important; /* 紧贴代码区域顶部 */
   z-index: 10 !important;
+  height: 24px !important; /* 减半高度：从 32px -> 24px */
+  line-height: 22px !important;
+  padding: 0 8px !important; /* 减小内边距 */
+  font-size: 12px !important; /* 稍微缩小字体 */
 }
 
 /* 调整各个按钮的水平位置 */
 div.language-python > span.lang {
   left: 0 !important;
+  top: -26px !important;
+  padding: 2px 10px !important;
+  background: var(--vp-c-bg) !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
 }
 
 div.language-python > button.copy {
-  right: 100px !important; /* 复制按钮位置 */
+  right: 110px !important; /* 复制按钮位置 */
+  top: -26px !important;
 }
 
 div.language-python > button:not(.copy) {
   right: 0 !important; /* 运行代码按钮在最右边 */
+  top: -26px !important;
 }
 
-/* === Python 代码字体颜色：绿色 === */
-/* 只修改 Python 代码块内的代码字体颜色，不影响其他语言 */
+/* === Python 代码块样式：背景 + 字体 === */
+/* 参考 EnhancedCodeBlock.vue 的样式 */
+
+/* 代码块背景色 */
+div.language-python {
+  background: #1e1e1e !important;
+}
+
+/* 代码区域背景色 */
+div.language-python pre {
+  background: #1e1e1e !important;
+  margin: 0 !important;
+  padding: 16px !important;
+}
+
+/* 确保行号容器不被遮挡 */
+div.language-python .line-numbers-wrapper {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+/* 代码字体样式 */
 div.language-python pre code {
-  color: #00ff00 !important;
+  background: none !important;
+  color: #d4d4d4 !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  white-space: pre !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* 悬停效果 */
+div.language-python:hover {
+  background: #252525 !important;
 }
 
 /* === Python 代码块编辑功能样式 === */
