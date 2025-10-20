@@ -64,11 +64,11 @@ function enhancePythonCodeBlocks(app: any) {
     console.log(`[EnhancedCodeBlock] Found ${allPreBlocks.length} pre elements`)
 
     // 查找所有 Python 代码块 - 尝试多种选择器
-    let codeBlocks = document.querySelectorAll('div.language-python pre code')
+    let codeBlocks = document.querySelectorAll('div.language-python pre code') as NodeListOf<HTMLElement>
 
     if (codeBlocks.length === 0) {
       // 备用选择器
-      codeBlocks = document.querySelectorAll('pre code.language-python')
+      codeBlocks = document.querySelectorAll('pre code.language-python') as NodeListOf<HTMLElement>
     }
 
     console.log(`[EnhancedCodeBlock] Found ${codeBlocks.length} Python code blocks`)
