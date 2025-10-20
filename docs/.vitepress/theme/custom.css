@@ -129,16 +129,16 @@ div.language-python > button:not(.copy) {
 }
 
 /* === Python 代码块样式：背景 + 字体 === */
-/* 参考 EnhancedCodeBlock.vue 的样式 */
+/* 使用 VitePress 默认主题色，保持与其他代码块一致 */
 
-/* 代码块背景色 */
+/* 代码块背景色 - 使用 VitePress 主题变量 */
 div.language-python {
-  background: #1e1e1e !important;
+  background: var(--vp-code-block-bg) !important;
 }
 
-/* 代码区域背景色 */
+/* 代码区域背景色 - 使用 VitePress 主题变量 */
 div.language-python pre {
-  background: #1e1e1e !important;
+  background: var(--vp-code-block-bg) !important;
   margin: 0 !important;
   padding: 16px !important;
 }
@@ -149,10 +149,10 @@ div.language-python .line-numbers-wrapper {
   padding-bottom: 16px !important;
 }
 
-/* 代码字体样式 */
+/* 代码字体样式 - 保留语法高亮 */
 div.language-python pre code {
   background: none !important;
-  color: #d4d4d4 !important;
+  /* 移除 color 覆盖，让 VitePress 的语法高亮生效 */
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
   font-size: 14px !important;
   line-height: 1.6 !important;
@@ -161,9 +161,10 @@ div.language-python pre code {
   border-radius: 0 !important;
 }
 
-/* 悬停效果 */
+/* 悬停效果 - 使用 VitePress 主题色 */
 div.language-python:hover {
-  background: #252525 !important;
+  background: var(--vp-code-block-bg) !important;
+  opacity: 0.95;
 }
 
 /* === Python 代码块编辑功能样式 === */
