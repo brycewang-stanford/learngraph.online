@@ -34,6 +34,10 @@ function getModuleSidebar() {
     if (moduleNumber === '0') moduleText = '第 0 章 前言'
     if (moduleNumber === '1') moduleText = '第 1 章 基础概念'
     if (moduleNumber === '2') moduleText = '第 2 章 核心机制'
+    if (moduleNumber === '3') moduleText = '第 3 章 人机协作'
+    if (moduleNumber === '4') moduleText = '第 4 章 高级模式'
+    if (moduleNumber === '5') moduleText = '第 5 章 记忆系统'
+    if (moduleNumber === '6') moduleText = '第 6 章 生产部署'
     sidebar.push({
       text: moduleText,
       collapsed: false,
@@ -73,10 +77,7 @@ export default defineConfig({
       {
         text: '课程章节',
         items: [
-          { text: '第 0 章 前言 - 飞速上手', link: '/module-0/0.0-LangGraph-上手案例' },
-          { text: '第 0 章 前言 - Python 基础', link: '/module-0/0.1-Python-基础入门' },
-          { text: '第 0 章 前言 - LangGraph 入门', link: '/module-0/0.2-LangGraph-基础入门' },
-          { text: '第 0 章 前言 - LangChain 介绍', link: '/module-0/0.3-补充-LangChain-快速介绍' },
+          { text: '第 0 章 - 前言', link: '/module-0/0.0-LangGraph-上手案例' },
           { text: '第 1 章 - 基础概念', link: '/module-1/1.1-simple-graph-最简图' },
           { text: '第 2 章 - 核心机制', link: '/module-2/2.1-state-schema-详细解读' },
           { text: '第 3 章 - 人机协作', link: '/module-3/breakpoints-详细解读' },
