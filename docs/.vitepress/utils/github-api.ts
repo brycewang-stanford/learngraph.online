@@ -58,6 +58,10 @@ export async function updateFile(
   content: string,
   commitMessage: string
 ): Promise<FileUpdateResponse> {
+  if (typeof window === 'undefined') {
+    throw new Error('此操作只能在客户端执行')
+  }
+
   const token = localStorage.getItem('github_token')
 
   if (!token) {
@@ -89,6 +93,10 @@ export async function updateFile(
  * 获取 GitHub 仓库中的文件内容
  */
 export async function getFile(filePath: string): Promise<string> {
+  if (typeof window === 'undefined') {
+    throw new Error('此操作只能在客户端执行')
+  }
+
   const token = localStorage.getItem('github_token')
 
   if (!token) {
@@ -114,6 +122,7 @@ export async function getFile(filePath: string): Promise<string> {
  * 保存登录状态到 localStorage
  */
 export function saveAuthState(token: string, user: GitHubUser, isAdmin: boolean) {
+  if (typeof window === 'undefined') return
   localStorage.setItem('github_token', token)
   localStorage.setItem('github_user', JSON.stringify(user))
   localStorage.setItem('is_admin', isAdmin.toString())
@@ -123,6 +132,7 @@ export function saveAuthState(token: string, user: GitHubUser, isAdmin: boolean)
  * 清除登录状态
  */
 export function clearAuthState() {
+  if (typeof window === 'undefined') return
   localStorage.removeItem('github_token')
   localStorage.removeItem('github_user')
   localStorage.removeItem('is_admin')
@@ -132,6 +142,7 @@ export function clearAuthState() {
  * 检查是否已登录且为管理员
  */
 export function isAdmin(): boolean {
+  if (typeof window === 'undefined') return false
   const isAdminStr = localStorage.getItem('is_admin')
   return isAdminStr === 'true'
 }
@@ -140,6 +151,7 @@ export function isAdmin(): boolean {
  * 获取当前用户信息
  */
 export function getCurrentUser(): GitHubUser | null {
+  if (typeof window === 'undefined') return null
   const userStr = localStorage.getItem('github_user')
   if (!userStr) return null
 
