@@ -149,16 +149,21 @@ div.language-python .line-numbers-wrapper {
   padding-bottom: 16px !important;
 }
 
-/* 代码字体样式 - 保留语法高亮 */
+/* 代码字体样式 - 经典 Python 编程字体 */
 div.language-python pre code {
   background: none !important;
   /* 移除 color 覆盖，让 VitePress 的语法高亮生效 */
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  /* 使用经典编程字体，优先级从高到低 */
+  font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace !important;
   font-size: 14px !important;
-  line-height: 1.6 !important;
+  line-height: 1.7 !important;
   white-space: pre !important;
   padding: 0 !important;
   border-radius: 0 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.02em !important; /* 字母间距，提高可读性 */
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 /* 悬停效果 - 使用 VitePress 主题色 */
