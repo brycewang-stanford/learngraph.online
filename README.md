@@ -1,273 +1,204 @@
-# 《智能体搭建与 LangGraph飞速上手》
+# 《LangGraph 飞速上手 v0.1》
 
-> 基于 LangChain Academy 官方课程的深度解读与工程实战指南
+> 案例先行，通俗易懂 —— 基于 LangChain Academy 的深度解读与工程实战指南
 
-![LangGraph Version](https://img.shields.io/badge/LangGraph-Latest-green)
+[![在线阅读](https://img.shields.io/badge/在线阅读-learngraph.online-blue)](https://www.learngraph.online)
+![LangGraph](https://img.shields.io/badge/LangGraph-Latest-green)
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## 📚 课程结构
-
-本书基于 [LangChain Academy 官方课程](https://github.com/langchain-ai/langchain-academy)，包含以下模块：
-
-```
-learngraph.online/
-├── module-0/        # 第 0 章：Python 和 LangGraph 基础
-│   ├── 0.1-Python Basics.md
-│   └── 0.2-LangGraph Basics-详细解读.md
-│
-├── module-1/        # 第 1 章：LangGraph 核心概念
-│   ├── 1.1-simple-graph-最简图.md
-│   ├── 1.2-chain-详细解读.md
-│   ├── 1.3-router-详细解读.md
-│   ├── 1.4-agent-详细解读.md
-│   ├── 1.5-agent-memory-详细解读.md
-│   └── 1.6-deployment-详细解读.md
-│
-├── module-2/        # 第 2 章：状态管理与记忆系统
-│   ├── 2.1-state-schema-详细解读.md
-│   ├── 2.2-state-reducers-详细解读.md
-│   ├── 2.3-multiple-schemas-详细解读.md
-│   ├── 2.4-trim-filter-messages-详细解读.md
-│   ├── 2.5-chatbot-summarization-详细解读.md
-│   └── 2.6-chatbot-external-memory-详细解读.md
-│
-├── module-3/        # 第 3 章：人机协作与调试
-│   ├── breakpoints-详细解读.md
-│   ├── dynamic-breakpoints-详细解读.md
-│   ├── edit-state-human-feedback-详细解读.md
-│   ├── streaming-interruption-详细解读.md
-│   └── time-travel-详细解读.md
-│
-├── module-4/        # 第 4 章：高级架构模式
-│   ├── 4.1-parallelization-详细解读.md
-│   ├── 4.2-sub-graph-详细解读.md
-│   ├── 4.3-map-reduce-详细解读.md
-│   └── 4.4-research-assistant-详细解读.md
-│
-├── module-5/        # 第 5 章：高级主题（规划中）
-└── module-6/        # 第 6 章：生产部署（规划中）
-```
-
+---
 
 ## 📖 项目简介
 
-**LangGraph Lightning** 是一本深度解读 [LangChain Academy](https://academy.langchain.com/courses/intro-to-langgraph) 官方课程的中文实战指南。本书不仅对原课程内容进行详细注解，更重要的是大幅扩展了代码示例，增加了丰富的工程实战案例，旨在帮助 AI-Native 开发者快速掌握 LangGraph 和 Multi-Agent 系统开发。
+**AI 时代，理解为王：摒弃技术细节，直达 Agentic AI 思想内核**
 
-### 🎯 核心目标
+本书是 [LangChain Academy](https://academy.langchain.com/courses/intro-to-langgraph) 官方课程的深度解读与工程实战指南。通过通俗易懂的语言、丰富的案例和在线可执行代码，帮助零基础用户快速掌握 LangGraph 和 Multi-Agent 系统开发。
 
-1. **术语通俗化**：对所有 Python 和 LangGraph 术语进行深入浅出的解读
-2. **代码实战化**：在原课程基础上大规模扩展演示代码和工程案例
-3. **门槛最小化**：让零基础的 AI-Native 用户也能快速上手
-4. **场景落地化**：展示如何将 Multi-Agent 系统应用到实际业务中
-5. **流程重塑化**：探索生成式 AI 如何重塑传统业务流程
+### 🎯 核心特色
 
-## 🌟 项目特色
+- ✅ **零门槛上手**：术语通俗易懂老少皆宜地用大白话解读
+- ✅ **案例先行**：5 个从简单到复杂的实战案例，飞速上手
+- ✅ **在线运行**：网页内置 Python 运行环境，边学边练
+- ✅ **深度解读**：每个概念配有清晰定义、原理分析、代码示例、常见陷阱和最佳实践
+- ✅ **工程实战**：从演示级代码到生产级实现的完整指南
 
-### 相比原课程的增强
+---
 
-| 特性 | 原课程 | LangGraph Lightning |
-|------|--------|---------------------|
-| **语言** | 英文 | 中文详细解读 |
-| **术语解释** | 基础 | 深入通俗化讲解 |
-| **代码示例** | 演示级 | 生产级 + 工程实战 |
-| **难度曲线** | 中等 | 零基础友好 |
-| **实战案例** | 少量 | 大量业务场景 |
-| **AI 辅助** | 基础 | 深度整合 AI 开发工作流 |
+## 🌐 在线阅读
 
-### 适合人群
+**网站地址**：[https://www.learngraph.online](https://www.learngraph.online)
 
-- ✅ **AI-Native 开发者**：想要快速掌握 LangGraph 的新手
-- ✅ **Python 初学者**：需要详细 Python 知识点讲解
-- ✅ **业务开发者**：希望将 AI 应用到实际业务场景
-- ✅ **架构师**：探索 Multi-Agent 系统架构设计
-- ✅ **产品经理**：了解 AI Agent 的能力边界和应用场景
+### 网站功能
 
+- 📚 **完整课程内容**：6 大章节，30+ 篇详细解读文章
+- 💻 **在线代码运行**：无需本地环境，网页直接运行 Python 代码
+- 🔑 **API Key 管理**：安全存储 OpenAI、Anthropic、Tavily 等 API 密钥
+- 💬 **评论反馈**：每页底部可留言交流学习心得
+- 🎨 **响应式设计**：支持手机、平板、电脑多端访问
 
-## 🎓 学习路径
+---
+
+## 📚 课程结构
 
 ### 第 0 章：基础入门
-**目标**：理解 Python 基础和 LangChain 生态系统
 
-- Python 核心概念（环境变量、列表推导、异步编程）
-- LangChain 和 LangGraph 的关系
-- Chat Models 的使用
-- 工具集成（Tavily 搜索）
+- **0.0 LangGraph 上手案例**：5 个从简单到复杂的实战案例，飞速上手
+- **0.1 Python 基础入门**：Python 核心概念和 AI/ML 库入门
+- **0.2 LangGraph 基础入门**：LangChain 生态、Chat Models、工具集成
+- **0.3 LangChain 快速回顾**：从 LangGraph 角度系统学习 LangChain 7 大核心组件
 
 ### 第 1 章：LangGraph 核心
-**目标**：掌握图、节点、状态的基本概念
 
-- 构建第一个 LangGraph
-- Chain vs Router vs Agent
-- 状态管理机制
-- Agent 记忆系统
-- 本地部署和云部署
+- **1.1 构建第一个 LangGraph**：一个最简单的图
+- **1.2 Chain**：顺序执行的工作流
+- **1.3 Router**：条件分支与路由
+- **1.4 Agent**：智能决策与工具调用
+- **1.5 Agent 记忆系统**：多轮对话与持久化
+- **1.6 部署指南**：本地开发与生产部署
 
 ### 第 2 章：状态管理
-**目标**：深入理解状态的定义和管理
 
-- State Schema 设计
-- Reducers 的作用
-- 多模式状态管理
-- 消息过滤和裁剪
-- 长期记忆和摘要
+- **2.1 State Schema 设计**：定义图的数据结构
+- **2.2 Reducers**：状态更新的合并策略
+- **2.3 Multiple Schemas**：多模式状态管理
+- **2.4 消息过滤和裁剪**：管理 Token 消耗
+- **2.5 对话摘要**：长期记忆的实现
+- **2.6 外部记忆存储**：集成向量数据库
 
 ### 第 3 章：人机协作
-**目标**：实现可控的 Human-in-the-Loop 工作流
 
-- 断点调试
-- 动态断点
-- 状态编辑
-- 流式中断
-- 时间旅行调试
+- **3.1 Breakpoints**：断点调试机制
+- **3.2 Dynamic Breakpoints**：动态条件断点
+- **3.3 状态编辑**：人工审核与修正
+- **3.4 流式中断**：实时交互与介入
+- **3.5 Time Travel**：时间旅行调试
 
 ### 第 4 章：高级模式
-**目标**：构建复杂的 Multi-Agent 系统
 
-- 并行执行优化
-- 子图模块化设计
-- Map-Reduce 模式
-- 实战：构建研究助手
+- **4.1 并行执行**：提升系统吞吐量
+- **4.2 Sub-Graph**：模块化设计与复用
+- **4.3 Map-Reduce**：批量处理模式
+- **4.4 研究助手**：完整的实战案例
 
-### 第 5-6 章：生产实战（即将推出）
-- 性能优化
-- 监控和日志
-- 安全性和权限
-- 大规模部署
+### 第 5 章：记忆系统
 
-## 💡 核心特点
+- **5.1 Memory Agent**：带记忆的智能体
+- **5.2 Memory Store**：记忆存储机制
+- **5.3 用户画像**：构建个性化记忆
+- **5.4 记忆集合**：管理多维度记忆
 
-### 1. 术语深度解读
+### 第 6 章：生产部署
 
-每个 Python 和 LangGraph 概念都配有：
-- 📝 **概念定义**：清晰的术语解释
-- 🔍 **原理分析**：为什么需要这个概念
-- 💻 **代码示例**：可直接运行的示例
-- ⚠️ **常见陷阱**：新手容易犯的错误
-- ✅ **最佳实践**：生产环境推荐做法
+- **6.1 创建部署**：LangGraph Platform 快速上手
+- **6.2 连接部署**：API 集成与调用
+- **6.3 Double Texting**：并发请求处理
+- **6.4 Assistants**：助手模式最佳实践
 
-### 2. 大规模代码扩展
-
-原课程代码的基础上，每个主题都扩展了：
-- 🎯 **完整实现**：从头到尾的完整代码
-- 🔧 **变体示例**：不同场景的实现方式
-- 🚀 **生产级代码**：带错误处理、日志、测试
-- 🏗️ **架构设计**：系统设计思路和权衡
-- 📊 **性能优化**：Token 优化、速度优化
-
-### 3. 工程实战案例
-
-每个模块都包含真实业务场景：
-- 🤖 **智能客服系统**：多轮对话、意图识别
-- 📚 **知识库助手**：RAG、向量检索
-- 🔍 **研究助手**：网络搜索、信息整合
-- 💼 **业务流程自动化**：审批、通知、数据处理
-- 🎨 **内容创作系统**：多 Agent 协作创作
-
-### 4. AI-Native 开发流程
-
-展示如何利用 AI 加速开发：
-- 🧠 **AI 辅助编码**：Claude/GPT 如何帮助你写代码
-- 🐛 **AI 调试**：让 AI 帮你找 bug
-- 📖 **AI 学习**：如何向 AI 提问以深化理解
-- 🔄 **迭代优化**：AI 辅助的代码重构
-- 📝 **文档生成**：AI 自动生成注释和文档
+---
 
 ## 🚀 快速开始
 
-### 环境要求
+### 在线学习（推荐）
+
+直接访问 [https://www.learngraph.online](https://www.learngraph.online)，无需任何配置即可开始学习！
+
+### 本地运行
 
 ```bash
-Python 3.11+
-pip install langchain langchain-openai langchain-community langgraph tavily-python
-```
+# 1. 克隆仓库
+git clone https://github.com/brycewang-stanford/learngraph.online.git
+cd learngraph.online
 
-### API 密钥配置
+# 2. 安装依赖
+pip install langchain langchain-openai langchain-anthropic \
+            langgraph tavily-python python-dotenv
 
-```python
-import os
-from getpass import getpass
+# 3. 配置 API 密钥
+cp .env.example .env
+# 编辑 .env 文件，填入你的 API 密钥
 
-# OpenAI API Key
-os.environ["OPENAI_API_KEY"] = getpass("OpenAI API Key: ")
-
-# LangSmith (可选，用于追踪和调试)
-os.environ["LANGSMITH_API_KEY"] = getpass("LangSmith API Key: ")
-os.environ["LANGSMITH_TRACING_V2"] = "true"
-
-# Tavily Search API (Module 4 需要)
-os.environ["TAVILY_API_KEY"] = getpass("Tavily API Key: ")
+# 4. 开始学习
+# 按章节顺序阅读 module-0 到 module-6 中的 Markdown 文件
 ```
 
 ### 第一个 LangGraph
 
 ```python
 from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, MessagesState
+from langgraph.graph import StateGraph, MessagesState, START, END
 
-# 定义节点
+# 定义聊天机器人节点
 def chatbot(state: MessagesState):
-    return {"messages": [ChatOpenAI(model="gpt-4o-mini").invoke(state["messages"])]}
+    return {"messages": ChatOpenAI(model="gpt-4o-mini").invoke(state["messages"])}
 
 # 构建图
 graph = StateGraph(MessagesState)
 graph.add_node("chatbot", chatbot)
-graph.set_entry_point("chatbot")
-graph.set_finish_point("chatbot")
+graph.add_edge(START, "chatbot")
+graph.add_edge("chatbot", END)
 
-# 运行
+# 编译并运行
 app = graph.compile()
-response = app.invoke({"messages": [("user", "Hello!")]})
+response = app.invoke({"messages": [("user", "你好！")]})
+print(response["messages"][-1].content)
 ```
 
-详细教程请参考 `module-1/1.1-simple-graph-最简图.md`
+---
 
-## 📖 与原课程的关系
+## 💡 学习建议
 
-### 原课程信息
+### 初学者路径（4-6 周）
 
-- **官方主页**：https://academy.langchain.com/courses/intro-to-langgraph
-- **GitHub 仓库**：https://github.com/langchain-ai/langchain-academy
-- **授课团队**：LangChain AI
-- **课程定位**：LangGraph 官方入门课程
-
-### 本书定位
-
-**LangGraph Lightning** 是对原课程的：
-- ✅ **深度解读**：不是简单翻译，而是深入分析每个概念
-- ✅ **内容扩展**：原课程基础上增加 3-5 倍的内容量
-- ✅ **实战强化**：将演示级代码升级为生产级实现
-- ✅ **本地化适配**：针对中文开发者的学习习惯和痛点
-
-## 🎯 学习建议
-
-### 初学者路径
-
-1. **第 0 章（2 天）**：确保 Python 基础扎实
+1. **第 0 章（3-5 天）**：快速上手案例 + Python 基础
 2. **第 1 章（1 周）**：理解 LangGraph 核心概念
 3. **第 2 章（1 周）**：掌握状态管理
-4. **第 3 章（3 天）**：学会调试技巧
+4. **第 3 章（3-5 天）**：学会调试技巧
 5. **第 4 章（1 周）**：构建复杂系统
-6. **项目实战（2 周）**：选择一个场景深入实现
+6. **第 5-6 章（1 周）**：生产部署实战
 
-### 进阶开发者路径
+### 进阶开发者路径（1-2 周）
 
 - 快速浏览第 0-1 章
 - 深入学习第 2-4 章
-- 重点关注架构设计和性能优化
-- 参与开源贡献和案例扩展
+- 重点关注第 5-6 章的生产实践
+- 参考项目实战案例
 
-### AI 辅助学习技巧
+### 在线学习技巧
 
-```
-# 推荐的 AI 提示词模板
+1. **使用网站内置 Python 环境**：无需本地配置，直接运行代码
+2. **配置 API Key**：在网站右上角配置你的 API 密钥
+3. **逐章学习**：按顺序学习，每章都有详细的进度指引
+4. **实践为主**：运行每个代码示例，观察输出结果
+5. **留言交流**：在页面底部评论区提问和分享
 
-"请解释 LangGraph 中的 [概念]，用简单的类比说明"
-"这段代码为什么这样写：[代码片段]"
-"如何用 LangGraph 实现 [业务场景]"
-"帮我优化这段代码的性能：[代码]"
-"这个错误是什么原因：[错误信息]"
-```
+---
+
+## 🌟 项目亮点
+
+### 1. LangGraph 的设计哲学
+
+以图为核心，用可视化与函数式结构让多智能体系统的推理过程清晰、可控、可扩展。LangGraph 选择不做"另一个工作流构建器"，而是聚焦如何用代码与智能体结合，让 AI 从拼装工具走向真正的智能创造。
+
+### 2. 拒绝"拖拽式"工具带来的幻觉
+
+LangChain 创始人 Harrison Chase 指出，拖拽式工作流工具追求的是可预测性，却无法真正构建具备自主决策的智能体。在他看来，OpenAI 的 AgentKit 以及市面上的 Coze、LangFlow 和 Flowise 等，本质上都是可视化工作流构建器，而非真正的"智能体构建器"。
+
+### 3. 通俗易懂的语言
+
+- 每个术语都有通俗化解释
+- 大量类比和生活化例子
+- 避免晦涩的技术黑话
+- 面向 AI-Native 开发者的学习习惯
+
+### 4. 在线可执行代码
+
+- 网页内置 Pyodide 环境
+- 支持大部分 Python 库
+- 安全的沙盒执行
+- 即时查看运行结果
+
+---
 
 ## 🤝 贡献指南
 
@@ -283,30 +214,68 @@ response = app.invoke({"messages": [("user", "Hello!")]})
 
 1. Fork 本仓库
 2. 创建特性分支：`git checkout -b feature/amazing-case`
-3. 提交改动：`git commit -m 'Add amazing case'`
+3. 提交改动：`git commit -m 'Add: 添加精彩案例'`
 4. 推送分支：`git push origin feature/amazing-case`
 5. 提交 Pull Request
 
+---
+
+## 📊 技术栈
+
+### 前端
+
+- **VitePress**：静态网站生成器
+- **Vue 3**：交互式组件
+- **Pyodide**：浏览器端 Python 运行环境
+- **Monaco Editor**：代码编辑器
+- **Shiki**：语法高亮
+
+### 后端
+
+- **FastAPI**：Python 代码执行 API
+- **Docker**：安全的代码执行环境
+- **GitHub OAuth**：管理员登录
+
+### 部署
+
+- **Vercel**：前端托管
+- **Render**：后端托管
+- **Cloudflare**：CDN 加速
+- **Google Analytics**：访问统计
+
+---
+
 ## 📧 联系方式
 
-- **作者邮箱**：brycewang2018@gmail.com
+- **作者**：王几行XING (Bryce Wang)
+- **知乎**：[@王几行XING](https://www.zhihu.com/people/brycewang1898)
+- **邮箱**：brycew6m@gmail.com
 - **GitHub Issues**：欢迎提问和反馈
-- **讨论区**：分享你的学习心得和项目案例
+- **网站反馈**：每页底部评论区
+
+---
 
 ## 📄 许可证
 
 本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
 
+---
+
 ## 🙏 致谢
 
 - 感谢 **LangChain AI 团队**创造了优秀的 LangGraph 框架和官方课程
 - 感谢 **LangChain Academy** 提供了高质量的教学内容
-- 感谢所有为本项目做出贡献的开发者
+- 感谢 **Pyodide 团队**让 Python 在浏览器中运行成为可能
+- 感谢所有为本项目做出贡献的开发者和学习者
+
+---
 
 ## 🌟 Star History
 
 如果这个项目对你有帮助，请给我们一个 ⭐ Star！
 
+[![Star History Chart](https://api.star-history.com/svg?repos=brycewang-stanford/learngraph.online&type=Date)](https://star-history.com/#brycewang-stanford/learngraph.online&Date)
+
 ---
 
-**让我们一起，在生成式 AI 的助力下，重塑这个世界的业务流程！** 🚀
+**让我们一起，在 AI 时代，通过理解而非技术细节，直达 Agentic AI 的思想内核！** 🚀
