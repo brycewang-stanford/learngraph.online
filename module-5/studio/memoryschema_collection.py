@@ -13,7 +13,7 @@ from langgraph.store.base import BaseStore
 import configuration
 
 # Initialize the LLM
-model = ChatOpenAI(model="gpt-4o", temperature=0) 
+model = ChatOpenAI(model="gpt-5-nano", temperature=0) 
 
 # Memory schema
 class Memory(BaseModel):

@@ -101,7 +101,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, MessagesState
 
 def chatbot(state: MessagesState):
-    return {"messages": [ChatOpenAI(model="gpt-4o").invoke(state["messages"])]}
+    return {"messages": [ChatOpenAI(model="gpt-5-nano").invoke(state["messages"])]}
 
 graph = StateGraph(MessagesState)
 graph.add_node("chatbot", chatbot)

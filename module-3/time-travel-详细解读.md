@@ -125,7 +125,7 @@ tools = [add, multiply, divide]
 ```python
 from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="gpt-4o")
+llm = ChatOpenAI(model="gpt-5-nano")
 llm_with_tools = llm.bind_tools(tools)
 ```
 
