@@ -5,10 +5,10 @@
       <div class="code-info">
         <span class="language-badge">🐍 Python</span>
         <button
-          v-if="editedCode && editedCode !== props.code"
           @click="resetCode"
+          :disabled="!editedCode || editedCode === props.code"
           class="action-button reset-button"
-          title="还原到初始代码"
+          :title="editedCode && editedCode !== props.code ? '还原到初始代码' : '代码未修改'"
         >
           ↩️ 还原代码
         </button>
@@ -370,10 +370,15 @@ function clearOutput() {
   font-size: 12px;
 }
 
-.reset-button:hover {
+.reset-button:hover:not(:disabled) {
   background: var(--vp-c-bg);
   border-color: #ef4444;
   color: #ef4444;
+}
+
+.reset-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .code-actions {
