@@ -2,9 +2,11 @@
   "buildCommand": "npm run docs:build",
   "outputDirectory": "docs/.vitepress/dist",
   "framework": "vitepress",
-  "env": {
-    "VITE_BASE_PATH": "/",
-    "VITE_API_URL": "https://learngraph-online.onrender.com",
-    "VITE_GITHUB_CLIENT_ID": "Ov23liYctx3CdbERtLVE"
+  "build": {
+    "env": {
+      "VITE_BASE_PATH": "/",
+      "VITE_API_URL": "https://learngraph-online.onrender.com",
+      "VITE_GITHUB_CLIENT_ID": "Ov23liYctx3CdbERtLVE"
+    }
   }
 }
