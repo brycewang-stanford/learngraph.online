@@ -40,7 +40,7 @@
     </div>
 
     <!-- 代码展示区 -->
-    <div class="code-wrapper">
+    <div class="code-wrapper" @click="onCodeWrapperClick">
       <pre
         class="code-content"
         :class="{ 'editing': isEditing }"
@@ -184,9 +184,31 @@ function needsOpenAIKey(code: string): boolean {
   return patterns.some(pattern => pattern.test(code))
 }
 
-// 点击代码区域（暂不需要）
+// 点击代码区域进入编辑模式
 function onCodeWrapperClick(event: MouseEvent) {
-  // 现在只通过编辑按钮进入编辑模式
+  // 如果已经在编辑模式，不处理
+  if (isEditing.value) return
+
+  // 进入编辑模式
+  isEditing.value = true
+  editedCode.value = editedCode.value || props.code
+
+  // 等待 DOM 更新后聚焦
+  nextTick(() => {
+    if (codeElement.value) {
+      codeElement.value.focus()
+
+      // 尝试将光标移到点击位置
+      const selection = window.getSelection()
+      if (selection) {
+        const range = document.createRange()
+        range.selectNodeContents(codeElement.value)
+        range.collapse(false) // 折叠到末尾
+        selection.removeAllRanges()
+        selection.addRange(range)
+      }
+    }
+  })
 }
 
 // 切换编辑模式
@@ -407,6 +429,11 @@ function clearOutput() {
   background: #1e1e1e;
   overflow-x: auto;
   transition: background 0.2s;
+  cursor: pointer;
+}
+
+.code-wrapper:hover:not(:has(.code-content.editing)) {
+  background: #252525;
 }
 
 .code-content {
