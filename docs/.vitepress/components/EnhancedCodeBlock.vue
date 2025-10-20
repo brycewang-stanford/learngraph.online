@@ -40,26 +40,19 @@
     </div>
 
     <!-- 代码展示区 -->
-    <div class="code-wrapper" style="position: relative;">
+    <div class="code-wrapper">
       <pre
         class="code-content"
         :class="{ 'editing': isEditing }"
       >
         <code
+          ref="codeElement"
           class="language-python"
+          :contenteditable="isEditing"
+          @blur="onCodeBlur"
           v-html="highlightedCode"
         ></code>
       </pre>
-
-      <!-- 编辑模式：使用 textarea 覆盖层 -->
-      <textarea
-        v-if="isEditing"
-        ref="textareaElement"
-        v-model="editedCode"
-        class="code-editor-overlay"
-        @blur="onCodeBlur"
-        spellcheck="false"
-      ></textarea>
     </div>
 
     <!-- 输出区域 -->
@@ -102,7 +95,7 @@ const executionTime = ref<number | null>(null)
 const copied = ref(false)
 const isEditing = ref(false)
 const editedCode = ref('')
-const textareaElement = ref<HTMLTextAreaElement | null>(null)
+const codeElement = ref<HTMLElement | null>(null)
 const highlightedCode = ref('')
 const codeBlockContainer = ref<HTMLElement | null>(null)
 
@@ -144,6 +137,11 @@ function handleClickOutside(event: MouseEvent) {
 // 退出编辑模式
 async function exitEditMode() {
   if (isEditing.value) {
+    // 保存编辑后的代码
+    if (codeElement.value) {
+      editedCode.value = codeElement.value.textContent || ''
+    }
+
     // 更新语法高亮
     if (editedCode.value) {
       highlightedCode.value = await highlightCode(editedCode.value)
@@ -167,7 +165,12 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-// 编辑时已通过 v-model 自动同步，不需要 onCodeInput
+// 编辑时保存内容
+function onCodeInput() {
+  if (!codeElement.value) return
+  // 保存编辑内容
+  editedCode.value = codeElement.value.textContent || ''
+}
 
 // 检测代码是否需要 OpenAI API Key
 function needsOpenAIKey(code: string): boolean {
@@ -181,9 +184,9 @@ function needsOpenAIKey(code: string): boolean {
   return patterns.some(pattern => pattern.test(code))
 }
 
-// 点击代码区域（不需要了，通过编辑按钮进入编辑）
+// 点击代码区域（暂不需要）
 function onCodeWrapperClick(event: MouseEvent) {
-  // 不再通过点击进入编辑模式
+  // 现在只通过编辑按钮进入编辑模式
 }
 
 // 切换编辑模式
@@ -196,21 +199,18 @@ function toggleEdit() {
     isEditing.value = true
     editedCode.value = editedCode.value || props.code
     nextTick(() => {
-      if (textareaElement.value) {
-        textareaElement.value.focus()
-        // 将光标移到末尾
-        textareaElement.value.setSelectionRange(
-          textareaElement.value.value.length,
-          textareaElement.value.value.length
-        )
+      if (codeElement.value) {
+        codeElement.value.focus()
       }
     })
   }
 }
 
-// 代码失焦时（v-model 已自动保存）
+// 代码失焦时保存编辑内容
 function onCodeBlur() {
-  // editedCode 已通过 v-model 自动更新
+  if (isEditing.value && codeElement.value) {
+    editedCode.value = codeElement.value.textContent || ''
+  }
 }
 
 // 复制代码
@@ -229,19 +229,19 @@ async function copyCode() {
 
 // 运行代码
 async function runCode() {
+  // 如果在编辑模式，先退出编辑
+  if (isEditing.value) {
+    await exitEditMode()
+  }
+
   isRunning.value = true
   output.value = ''
   error.value = ''
   executionTime.value = null
 
   try {
-    // 如果在编辑模式且有编辑内容，先保存编辑内容
-    if (isEditing.value && codeElement.value) {
-      editedCode.value = codeElement.value.textContent || ''
-    }
-
     // 执行代码：优先执行编辑后的代码
-    const codeToRun = (isEditing.value && editedCode.value) ? editedCode.value : props.code
+    const codeToRun = editedCode.value || props.code
     const result = await executeCode(codeToRun, 30)
     executionTime.value = result.execution_time || null
 
@@ -407,34 +407,6 @@ function clearOutput() {
   background: #1e1e1e;
   overflow-x: auto;
   transition: background 0.2s;
-}
-
-/* Textarea 编辑器覆盖层 */
-.code-editor-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 16px;
-  margin: 0;
-  border: none;
-  outline: 2px solid #f59e0b;
-  outline-offset: -2px;
-  background: rgba(30, 30, 30, 0.98);
-  color: #d4d4d4;
-  font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.7;
-  letter-spacing: 0.02em;
-  resize: none;
-  overflow: auto;
-  white-space: pre;
-  word-wrap: normal;
-  tab-size: 2;
-  -moz-tab-size: 2;
-  caret-color: #10b981;
-  z-index: 5;
 }
 
 .code-content {
