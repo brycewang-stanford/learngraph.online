@@ -50,7 +50,8 @@
           class="language-python"
           :contenteditable="isEditing"
           @blur="onCodeBlur"
-        >{{ displayCode }}</code>
+          v-html="isEditing ? displayCode : highlightedCode"
+        ></code>
       </pre>
     </div>
 
@@ -78,8 +79,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { executeCode } from '../utils/python-api'
+import { codeToHtml } from 'shiki'
 
 const props = defineProps<{
   code: string
@@ -94,10 +96,32 @@ const copied = ref(false)
 const isEditing = ref(false)
 const editedCode = ref('')
 const codeElement = ref<HTMLElement | null>(null)
+const highlightedCode = ref('')
 
 // 显示的代码：编辑模式下显示编辑后的代码，否则显示原始代码
 const displayCode = computed(() => {
   return isEditing.value && editedCode.value ? editedCode.value : props.code
+})
+
+// 在组件挂载时进行语法高亮
+onMounted(async () => {
+  try {
+    highlightedCode.value = await codeToHtml(props.code, {
+      lang: 'python',
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark'
+      }
+    })
+    // 只提取 code 标签内的内容
+    const match = highlightedCode.value.match(/<code[^>]*>([\s\S]*)<\/code>/)
+    if (match) {
+      highlightedCode.value = match[1]
+    }
+  } catch (err) {
+    console.error('Failed to highlight code:', err)
+    highlightedCode.value = props.code
+  }
 })
 
 // 检测代码是否需要 OpenAI API Key
