@@ -115,7 +115,10 @@ const displayCode = computed(() => {
 // 语法高亮函数
 async function highlightCode(code: string) {
   try {
-    const html = await codeToHtml(code, {
+    // 删除开头的空白行
+    const trimmedCode = code.replace(/^\n+/, '')
+
+    const html = await codeToHtml(trimmedCode, {
       lang: 'python',
       themes: {
         light: 'github-light',
@@ -124,7 +127,7 @@ async function highlightCode(code: string) {
     })
     // 只提取 code 标签内的内容
     const match = html.match(/<code[^>]*>([\s\S]*)<\/code>/)
-    return match ? match[1] : code
+    return match ? match[1] : trimmedCode
   } catch (err) {
     console.error('Failed to highlight code:', err)
     return code
@@ -484,6 +487,8 @@ function clearOutput() {
 .code-content {
   margin: 0;
   padding: 16px;
+  padding-top: 0;
+  margin-top: -3em;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 14px;
   line-height: 1.6;
