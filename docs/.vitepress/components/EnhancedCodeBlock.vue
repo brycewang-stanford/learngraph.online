@@ -9,9 +9,9 @@
         <button
           @click="toggleEdit"
           class="action-button edit-button"
-          :title="isEditing ? '还原代码' : '编辑代码（临时修改）'"
+          :title="isEditing ? '保存代码' : '编辑代码（临时修改）'"
         >
-          {{ isEditing ? '↩️ 还原' : '✏️ 编辑' }}
+          {{ isEditing ? '💾 保存' : '✏️ 编辑' }}
         </button>
         <button
           @click="copyCode"
