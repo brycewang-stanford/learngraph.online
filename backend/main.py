@@ -16,6 +16,8 @@ import logging
 import requests
 from github import Github, GithubException
 from dotenv import load_dotenv
+import base64
+import glob
 
 # 加载环境变量
 load_dotenv()
@@ -86,6 +88,7 @@ class CodeExecutionResponse(BaseModel):
     output: Optional[str] = None
     error: Optional[str] = None
     execution_time: Optional[float] = None
+    images: Optional[list[str]] = None  # Base64 编码的图片列表
 
 
 @app.get("/")
@@ -139,76 +142,144 @@ async def execute_code(
             execution_time=round(time.time() - start_time, 3)
         )
 
-    # 创建临时文件
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as tmp_file:
-        tmp_file.write(request.code)
-        tmp_file_path = tmp_file.name
+    # 创建临时目录用于存放代码和图片
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_file_path = os.path.join(tmpdir, 'code.py')
+        output_dir = os.path.join(tmpdir, 'images')
+        os.makedirs(output_dir, exist_ok=True)
 
-    try:
-        # 构建环境变量
-        env = {
-            'PYTHONDONTWRITEBYTECODE': '1',
-            'PYTHONUNBUFFERED': '1',
-        }
+        # 包装用户代码，重定向 display(Image(...)) 调用
+        wrapped_code = f"""
+import sys
+import os
 
-        # 如果提供了 OpenAI API Key，添加到环境变量
-        if x_openai_api_key:
-            env['OPENAI_API_KEY'] = x_openai_api_key
-            logger.info("OpenAI API Key provided")
+# 设置图片输出目录
+IMAGE_OUTPUT_DIR = r'{output_dir}'
+os.makedirs(IMAGE_OUTPUT_DIR, exist_ok=True)
 
-        # 执行 Python 代码
-        # 使用当前 Python 解释器（sys.executable）确保使用虚拟环境
-        import sys
-        python_executable = sys.executable
+# 图片计数器
+_image_counter = 0
 
-        result = subprocess.run(
-            [python_executable, tmp_file_path],
-            capture_output=True,
-            text=True,
-            timeout=request.timeout,
-            env=env
-        )
+# 重写 IPython.display 模块
+class MockImage:
+    def __init__(self, data=None, url=None, filename=None, format=None, embed=None, width=None, height=None, retina=False, unconfined=False, metadata=None):
+        global _image_counter
+        self.data = data
 
-        execution_time = time.time() - start_time
+        # 如果 data 是字节数据，保存为文件
+        if data and isinstance(data, bytes):
+            _image_counter += 1
+            output_path = os.path.join(IMAGE_OUTPUT_DIR, f'output_{{_image_counter}}.png')
+            with open(output_path, 'wb') as f:
+                f.write(data)
+            print()
+            print("---**Graph**---")
+            print(f"📊 Graph 架构图: output_{{_image_counter}}.png")
 
-        # 检查执行结果
-        if result.returncode == 0:
-            return CodeExecutionResponse(
-                success=True,
-                output=result.stdout if result.stdout else "✅ 代码执行成功（无输出）",
-                execution_time=round(execution_time, 3)
-            )
+def mock_display(*args, **kwargs):
+    \"\"\"模拟 display 函数\"\"\"
+    for arg in args:
+        if isinstance(arg, MockImage):
+            # Image 对象已经在构造时保存了
+            pass
         else:
+            # 其他对象直接打印
+            print(arg)
+
+# 创建 mock IPython 模块
+class IPythonDisplay:
+    Image = MockImage
+    display = mock_display
+
+# 创建 IPython 模块实例
+class IPythonModule:
+    display = IPythonDisplay
+
+# 注入到 sys.modules
+sys.modules['IPython'] = IPythonModule
+sys.modules['IPython.display'] = IPythonDisplay
+
+# 用户代码
+{request.code}
+"""
+
+        with open(tmp_file_path, 'w') as f:
+            f.write(wrapped_code)
+
+        try:
+            # 构建环境变量
+            env = os.environ.copy()
+            env.update({
+                'PYTHONDONTWRITEBYTECODE': '1',
+                'PYTHONUNBUFFERED': '1',
+            })
+
+            # 如果提供了 OpenAI API Key，添加到环境变量
+            if x_openai_api_key:
+                env['OPENAI_API_KEY'] = x_openai_api_key
+                logger.info("OpenAI API Key provided")
+
+            # 执行 Python 代码
+            import sys
+            python_executable = sys.executable
+
+            result = subprocess.run(
+                [python_executable, tmp_file_path],
+                capture_output=True,
+                text=True,
+                timeout=request.timeout,
+                env=env,
+                cwd=tmpdir
+            )
+
+            execution_time = time.time() - start_time
+
+            # 收集生成的图片
+            images_base64 = []
+            image_files = glob.glob(os.path.join(output_dir, '*.png')) + \
+                         glob.glob(os.path.join(output_dir, '*.jpg')) + \
+                         glob.glob(os.path.join(output_dir, '*.jpeg'))
+
+            for img_path in sorted(image_files):
+                try:
+                    with open(img_path, 'rb') as img_file:
+                        img_data = base64.b64encode(img_file.read()).decode('utf-8')
+                        images_base64.append(img_data)
+                except Exception as e:
+                    logger.warning(f"Failed to encode image {{img_path}}: {{e}}")
+
+            # 检查执行结果
+            if result.returncode == 0:
+                return CodeExecutionResponse(
+                    success=True,
+                    output=result.stdout if result.stdout else "✅ 代码执行成功（无输出）",
+                    execution_time=round(execution_time, 3),
+                    images=images_base64 if images_base64 else None
+                )
+            else:
+                return CodeExecutionResponse(
+                    success=False,
+                    error=result.stderr or "执行失败",
+                    execution_time=round(execution_time, 3)
+                )
+
+        except subprocess.TimeoutExpired:
+            execution_time = time.time() - start_time
+            logger.warning(f"Code execution timeout after {request.timeout}s")
             return CodeExecutionResponse(
                 success=False,
-                error=result.stderr or "执行失败",
+                error=f"⏱️ 执行超时（超过 {request.timeout} 秒）",
                 execution_time=round(execution_time, 3)
             )
 
-    except subprocess.TimeoutExpired:
-        execution_time = time.time() - start_time
-        logger.warning(f"Code execution timeout after {request.timeout}s")
-        return CodeExecutionResponse(
-            success=False,
-            error=f"⏱️ 执行超时（超过 {request.timeout} 秒）",
-            execution_time=round(execution_time, 3)
-        )
-
-    except Exception as e:
-        execution_time = time.time() - start_time
-        logger.error(f"Code execution error: {str(e)}")
-        return CodeExecutionResponse(
-            success=False,
-            error=f"执行错误: {str(e)}",
-            execution_time=round(execution_time, 3)
-        )
-
-    finally:
-        # 清理临时文件
-        try:
-            os.unlink(tmp_file_path)
         except Exception as e:
-            logger.warning(f"Failed to delete temp file: {e}")
+            execution_time = time.time() - start_time
+            logger.error(f"Code execution error: {str(e)}")
+            return CodeExecutionResponse(
+                success=False,
+                error=f"执行错误: {str(e)}",
+                execution_time=round(execution_time, 3)
+            )
 
 
 # Docker 沙箱版本（生产环境推荐）

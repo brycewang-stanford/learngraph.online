@@ -64,7 +64,7 @@
     </div>
 
     <!-- 输出区域 -->
-    <div v-if="output || error || executionTime !== null" class="output-wrapper">
+    <div v-if="output || error || executionTime !== null || images.length > 0" class="output-wrapper">
       <div class="output-header">
         <span class="output-title">📋 输出结果</span>
         <span v-if="executionTime !== null" class="execution-time">
@@ -80,6 +80,13 @@
         <!-- 正常输出 -->
         <div v-else-if="output" class="normal-output">
           <pre>{{ output }}</pre>
+        </div>
+
+        <!-- 图片输出 -->
+        <div v-if="images.length > 0" class="images-output">
+          <div v-for="(image, index) in images" :key="index" class="image-container">
+            <img :src="'data:image/png;base64,' + image" :alt="'输出图片 ' + (index + 1)" />
+          </div>
         </div>
       </div>
     </div>
@@ -106,6 +113,7 @@ const editedCode = ref('')
 const codeElement = ref<HTMLElement | null>(null)
 const highlightedCode = ref('')
 const codeBlockContainer = ref<HTMLElement | null>(null)
+const images = ref<string[]>([])
 
 // 显示的代码：编辑模式下显示编辑后的代码，否则显示原始代码
 const displayCode = computed(() => {
@@ -268,7 +276,8 @@ function onCodeBlur() {
 // 复制代码
 async function copyCode() {
   try {
-    const codeToCopy = isEditing.value && editedCode.value ? editedCode.value : props.code
+    // 优先复制编辑后的代码，如果没有编辑则复制原始代码
+    const codeToCopy = editedCode.value || props.code
     await navigator.clipboard.writeText(codeToCopy)
     copied.value = true
     setTimeout(() => {
@@ -290,6 +299,7 @@ async function runCode() {
   output.value = ''
   error.value = ''
   executionTime.value = null
+  images.value = []
 
   try {
     // 执行代码：优先执行编辑后的代码
@@ -299,6 +309,10 @@ async function runCode() {
 
     if (result.success) {
       output.value = result.output || '✅ 代码执行成功（无输出）'
+      // 处理图片输出
+      if (result.images && result.images.length > 0) {
+        images.value = result.images
+      }
     } else {
       // 检查是否是 API Key 相关错误
       const errorMsg = result.error || '执行失败'
@@ -327,6 +341,7 @@ function clearOutput() {
   output.value = ''
   error.value = ''
   executionTime.value = null
+  images.value = []
 }
 </script>
 
@@ -559,6 +574,31 @@ function clearOutput() {
   color: #991b1b;
 }
 
+/* 图片输出 */
+.images-output {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--vp-c-bg-soft);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.image-container img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* 暗色主题 */
 .dark .error-output {
   background: #7f1d1d;
@@ -567,6 +607,14 @@ function clearOutput() {
 
 .dark .error-output pre {
   color: #fee2e2;
+}
+
+.dark .image-container {
+  background: #1e1e1e;
+}
+
+.dark .image-container img {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* 响应式设计 */

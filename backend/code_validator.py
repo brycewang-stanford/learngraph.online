@@ -62,6 +62,8 @@ class CodeValidator:
         'langgraph', 'langgraph_checkpoint', 'langgraph_sdk',
         # OpenAI 和 Anthropic
         'openai', 'anthropic',
+        # Jupyter/IPython（用于图片显示）
+        'IPython',
         # 其他常用 AI 库
         'typing', 'typing_extensions', 'pydantic', 'enum'
     }
