@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "智能体系统快速搭建"
   text: "案例先行，通俗易懂"
-  tagline: AI时代，理解为王。摒弃非重要细节，直达 Agentic AI 思想内核
+  tagline: AI 时代，理解为王。摒弃非重要细节，直达 Agentic AI 思想内核
   image:
     src: /logo.svg
     alt: LearnGraph.online

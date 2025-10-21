@@ -585,18 +585,43 @@ function clearOutput() {
 .image-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   background: var(--vp-c-bg-soft);
   padding: 16px;
   border-radius: 8px;
   border: 1px solid var(--vp-c-divider);
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .image-container img {
   max-width: 100%;
+  width: auto;
   height: auto;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: block;
+}
+
+/* 自定义滚动条样式 */
+.image-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.image-container::-webkit-scrollbar-track {
+  background: var(--vp-c-bg);
+  border-radius: 4px;
+}
+
+.image-container::-webkit-scrollbar-thumb {
+  background: var(--vp-c-divider);
+  border-radius: 4px;
+}
+
+.image-container::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-text-3);
 }
 
 /* 暗色主题 */
