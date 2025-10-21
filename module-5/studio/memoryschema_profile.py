@@ -10,7 +10,7 @@ from langgraph.store.base import BaseStore
 import configuration
 
 # Initialize the LLM
-model = ChatOpenAI(model="gpt-4o-mini", temperature=0) 
+model = ChatOpenAI(model="gpt-5-nano", temperature=0) 
 
 # Schema 
 class UserProfile(BaseModel):

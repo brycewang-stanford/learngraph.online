@@ -130,7 +130,7 @@ from langgraph.graph import StateGraph, MessagesState, START, END
 
 # 定义聊天机器人节点
 def chatbot(state: MessagesState):
-    return {"messages": ChatOpenAI(model="gpt-4o-mini").invoke(state["messages"])}
+    return {"messages": ChatOpenAI(model="gpt-5-nano").invoke(state["messages"])}
 
 # 构建图
 graph = StateGraph(MessagesState)

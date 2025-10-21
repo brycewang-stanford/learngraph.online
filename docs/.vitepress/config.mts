@@ -75,7 +75,7 @@ export default defineConfig({
     logo: '/logo.svg',
     
     nav: [
-      { text: '本书作者：王几行XING', link: 'https://www.zhihu.com/people/brycewang1898' },
+      { text: '关于作者', link: 'https://www.zhihu.com/people/brycewang1898' },
       { text: '首页', link: '/' },
       { text: '开始学习', link: '/module-0/0.0-LangGraph-上手案例' },
       {
@@ -92,7 +92,8 @@ export default defineConfig({
       },
       { text: '🔑 API Key 配置', link: '/python-run' },
       { text: '📈 网站访问数据', link: 'https://analytics.google.com/analytics/web/?authuser=4#/a371083495p508309497/reports/intelligenthome' },
-      { text: '反馈审核', link: 'https://cusdis.com/dashboard/project/9a1060ba-ab12-4429-a517-44a5b140e2d6' }
+      { text: '反馈审核', link: 'https://cusdis.com/dashboard/project/9a1060ba-ab12-4429-a517-44a5b140e2d6' },
+      { text: '📅 更新 Roadmap', link: '/本书更新-Roadmap' }
     ],
     
     sidebar: getModuleSidebar(),

@@ -1,7 +1,7 @@
 <template>
   <div class="enhanced-code-block" ref="codeBlockContainer">
     <!-- 代码块头部工具栏 -->
-    <div class="code-header">
+    <div class="code-header" :class="{ 'top-toolbar': isLongCode }">
       <div class="code-info">
         <span class="language-badge">🐍 Python</span>
         <button
@@ -61,6 +61,53 @@
           v-html="highlightedCode"
         ></code>
       </pre>
+    </div>
+
+    <!-- 代码块底部工具栏（仅在长代码时显示） -->
+    <div v-if="isLongCode" class="code-header bottom-toolbar">
+      <div class="code-info">
+        <span class="language-badge">🐍 Python</span>
+        <button
+          @click="resetCode"
+          :disabled="!editedCode || editedCode === props.code"
+          class="action-button reset-button"
+          :title="editedCode && editedCode !== props.code ? '还原到初始代码' : '代码未修改'"
+        >
+          ↩️ 还原代码
+        </button>
+      </div>
+      <div class="code-actions">
+        <button
+          @click="toggleEdit"
+          class="action-button edit-button"
+          :title="isEditing ? '保存代码' : '编辑代码（临时修改）'"
+        >
+          {{ isEditing ? '💾 保存' : '✏️ 编辑' }}
+        </button>
+        <button
+          @click="copyCode"
+          class="action-button copy-button"
+          :title="copied ? '已复制！' : '复制代码'"
+        >
+          {{ copied ? '✓ 已复制' : '📋 复制' }}
+        </button>
+        <button
+          @click="runCode"
+          :disabled="isRunning"
+          class="action-button run-button"
+          :title="isRunning ? '代码执行中...' : '点击运行 Python 代码'"
+        >
+          {{ isRunning ? '⏳ 运行中...' : '▶️ 运行代码' }}
+        </button>
+        <button
+          v-if="output || error"
+          @click="clearOutput"
+          :disabled="isRunning"
+          class="action-button clear-button"
+        >
+          🗑️ 清空输出
+        </button>
+      </div>
     </div>
 
     <!-- 输出区域 -->
@@ -138,6 +185,13 @@ const images = ref<string[]>([])
 // 显示的代码：编辑模式下显示编辑后的代码，否则显示原始代码
 const displayCode = computed(() => {
   return isEditing.value && editedCode.value ? editedCode.value : props.code
+})
+
+// 判断是否为长代码（超过20行）
+const isLongCode = computed(() => {
+  const codeToCheck = editedCode.value || props.code
+  const lines = codeToCheck.split('\n').length
+  return lines > 20
 })
 
 // 语法高亮函数
@@ -324,7 +378,7 @@ async function runCode() {
   try {
     // 执行代码：优先执行编辑后的代码
     const codeToRun = editedCode.value || props.code
-    const result = await executeCode(codeToRun, 30)
+    const result = await executeCode(codeToRun, 300)
     executionTime.value = result.execution_time || null
 
     if (result.success) {
@@ -416,6 +470,18 @@ function clearOutput() {
   border-bottom: 1px solid var(--vp-c-divider);
   flex-wrap: wrap;
   gap: 12px;
+}
+
+/* 底部工具栏样式 */
+.code-header.bottom-toolbar {
+  border-bottom: none;
+  border-top: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+}
+
+/* 顶部工具栏在长代码时的样式 */
+.code-header.top-toolbar {
+  border-bottom: 1px solid var(--vp-c-divider-light);
 }
 
 .code-info {

@@ -80,7 +80,7 @@ app.add_middleware(
 # 请求模型
 class CodeExecutionRequest(BaseModel):
     code: str = Field(..., description="要执行的 Python 代码")
-    timeout: Optional[int] = Field(10, description="执行超时时间（秒）", ge=1, le=30)
+    timeout: Optional[int] = Field(10, description="执行超时时间（秒）", ge=1, le=300)  # 最大5分钟
 
 # 响应模型
 class CodeExecutionResponse(BaseModel):
@@ -107,7 +107,7 @@ async def health_check():
     return {
         "status": "ok",
         "python_version": "3.11",
-        "max_timeout": 30,
+        "max_timeout": 300,  # 5分钟
         "features": ["code_execution", "docker_sandbox"]
     }
 

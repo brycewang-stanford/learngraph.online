@@ -35,11 +35,17 @@ class CodeValidator:
         '__class__', '__bases__', '__subclasses__', '__import__'
     }
 
+    # 安全的魔术方法（允许用于调试和类型检查）
+    SAFE_MAGIC_METHODS = {
+        '__name__', '__class__', '__doc__', '__module__',
+        '__annotations__', '__dict__', '__str__', '__repr__'
+    }
+
     # 危险的字符串模式（正则表达式）
     DANGEROUS_PATTERNS = [
         r'import\s+(os|subprocess|socket|pickle)',  # 危险导入（移除 sys）
         r'from\s+(os|subprocess|socket)\s+import',  # from ... import（移除 sys）
-        r'__\w+__',  # 魔术方法/属性
+        # 移除了对所有 __x__ 的限制，改为在 AST 检查中精确控制
         r'\.{2,}/',  # 路径遍历 ../
         r'/etc/',  # 系统目录
         r'/home/',  # 用户目录
@@ -123,7 +129,8 @@ class CodeValidator:
 
             # 检查属性访问
             if isinstance(node, ast.Attribute):
-                if node.attr in cls.DANGEROUS_ATTRIBUTES:
+                # 允许安全的魔术方法访问（如 __class__.__name__ 用于获取类名）
+                if node.attr in cls.DANGEROUS_ATTRIBUTES and node.attr not in cls.SAFE_MAGIC_METHODS:
                     return False, f"❌ 不允许访问属性：{node.attr}（安全限制）"
 
                 # 检查 sys 模块的属性访问
