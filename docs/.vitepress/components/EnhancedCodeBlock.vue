@@ -67,9 +67,27 @@
     <div v-if="output || error || executionTime !== null || images.length > 0" class="output-wrapper">
       <div class="output-header">
         <span class="output-title">📋 输出结果</span>
-        <span v-if="executionTime !== null" class="execution-time">
-          ⏱️ {{ executionTime }}s
-        </span>
+        <div class="output-actions">
+          <button
+            v-if="output || error"
+            @click="copyCodeAndOutput"
+            class="copy-output-button copy-all-button"
+            :title="codeOutputCopied ? '已复制！' : '复制代码和输出内容'"
+          >
+            {{ codeOutputCopied ? '✓ 已复制' : '📄 复制代码+输出' }}
+          </button>
+          <button
+            v-if="output || error"
+            @click="copyOutput"
+            class="copy-output-button"
+            :title="outputCopied ? '已复制！' : '复制输出'"
+          >
+            {{ outputCopied ? '✓ 已复制' : '📋 复制输出' }}
+          </button>
+          <span v-if="executionTime !== null" class="execution-time">
+            ⏱️ {{ executionTime }}s
+          </span>
+        </div>
       </div>
       <div class="output-content">
         <!-- 错误信息 -->
@@ -108,6 +126,8 @@ const error = ref('')
 const isRunning = ref(false)
 const executionTime = ref<number | null>(null)
 const copied = ref(false)
+const outputCopied = ref(false)
+const codeOutputCopied = ref(false)
 const isEditing = ref(false)
 const editedCode = ref('')
 const codeElement = ref<HTMLElement | null>(null)
@@ -336,6 +356,39 @@ async function runCode() {
   }
 }
 
+// 复制输出内容
+async function copyOutput() {
+  try {
+    const textToCopy = error.value || output.value
+    await navigator.clipboard.writeText(textToCopy)
+    outputCopied.value = true
+    setTimeout(() => {
+      outputCopied.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('Failed to copy output:', err)
+  }
+}
+
+// 复制代码和输出内容
+async function copyCodeAndOutput() {
+  try {
+    const codeText = editedCode.value || props.code
+    const outputText = error.value || output.value
+
+    // 格式化：代码块 + 分隔线 + 输出
+    const combinedText = `# Python 代码\n${codeText}\n\n# 输出结果\n${outputText}`
+
+    await navigator.clipboard.writeText(combinedText)
+    codeOutputCopied.value = true
+    setTimeout(() => {
+      codeOutputCopied.value = false
+    }, 2000)
+  } catch (err) {
+    console.error('Failed to copy code and output:', err)
+  }
+}
+
 // 清空输出
 function clearOutput() {
   output.value = ''
@@ -445,12 +498,14 @@ function clearOutput() {
 }
 
 .clear-button {
-  background: #ef4444;
-  color: white;
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
 }
 
 .clear-button:hover:not(:disabled) {
-  background: #dc2626;
+  background: #fecaca;
+  border-color: #f87171;
 }
 
 .clear-button:disabled {
@@ -534,6 +589,44 @@ function clearOutput() {
   font-weight: 600;
   font-size: 14px;
   color: var(--vp-c-text-1);
+}
+
+.output-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.copy-output-button {
+  padding: 4px 10px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.copy-output-button:hover {
+  background: var(--vp-c-bg-soft);
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.copy-all-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.copy-all-button:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border-color: transparent;
+  color: white;
+  transform: translateY(-1px);
 }
 
 .execution-time {
@@ -640,6 +733,17 @@ function clearOutput() {
 
 .dark .image-container img {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark .clear-button {
+  background: #7f1d1d;
+  color: #fca5a5;
+  border-color: #991b1b;
+}
+
+.dark .clear-button:hover:not(:disabled) {
+  background: #991b1b;
+  border-color: #dc2626;
 }
 
 /* 响应式设计 */
