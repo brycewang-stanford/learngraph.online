@@ -683,7 +683,7 @@ function clearOutput() {
   padding: 16px;
   border-radius: 8px;
   border: 1px solid var(--vp-c-divider);
-  max-height: 600px;
+  max-height: 2000px;
   overflow-y: auto;
   overflow-x: auto;
 }

@@ -1,5 +1,6 @@
 <template>
   <button
+    v-if="hasSidebar"
     class="sidebar-toggle-btn"
     @click="toggleSidebar"
     :title="isCollapsed ? '展开目录' : '收起目录'"
@@ -17,9 +18,11 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vitepress'
+import { useRoute, useData } from 'vitepress'
+import { useSidebar } from 'vitepress/theme'
 
 const route = useRoute()
+const { hasSidebar } = useSidebar()
 const isCollapsed = ref(false)
 
 // 保存/恢复折叠状态

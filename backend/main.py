@@ -173,7 +173,6 @@ class MockImage:
             with open(output_path, 'wb') as f:
                 f.write(data)
             print()
-            print("---**Graph**---")
             print(f"📊 Graph 架构图: output_{{_image_counter}}.png")
 
 def mock_display(*args, **kwargs):
