@@ -25,7 +25,7 @@
     <!-- 输出区域 -->
     <div v-if="output || error || executionTime !== null" class="output-wrapper">
       <div class="output-header">
-        <span>📋 输出结果</span>
+        <span>📋 输出</span>
         <span v-if="executionTime !== null" class="time">⏱️ {{ executionTime }}s</span>
       </div>
       <div class="output-content">

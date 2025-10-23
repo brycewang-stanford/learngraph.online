@@ -31,7 +31,7 @@
     <!-- 输出区域 -->
     <div class="output-wrapper" v-if="output.length > 0 || error">
       <div class="output-header">
-        <span class="output-title">📋 输出结果</span>
+        <span class="output-title">📋 输出</span>
       </div>
       <div class="output-content">
         <!-- 错误信息 -->

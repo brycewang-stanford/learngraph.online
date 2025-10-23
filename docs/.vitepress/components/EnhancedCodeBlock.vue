@@ -113,7 +113,7 @@
     <!-- 输出区域 -->
     <div v-if="output || error || executionTime !== null || images.length > 0" class="output-wrapper">
       <div class="output-header">
-        <span class="output-title">📋 输出结果</span>
+        <span class="output-title">📋 输出</span>
         <div class="output-actions">
           <button
             v-if="output || error"
